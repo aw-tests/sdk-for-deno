@@ -121,4 +121,20 @@ export class Locale extends Service {
                {
             });
     }
+
+    /**
+     * List Languages
+     *
+     * @throws Exception
+     * @return Promise<string>
+     */
+    async getLanguages(): Promise<string> {
+        let path = '/locale/languages';
+        
+        return await this.client.call('get', path, {
+                    'content-type': 'application/json',
+               },
+               {
+            });
+    }
 }

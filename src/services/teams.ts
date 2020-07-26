@@ -40,11 +40,11 @@ export class Teams extends Service {
      * project.
      *
      * @param string name
-     * @param Array<string> roles
+     * @param Array<any> roles
      * @throws Exception
      * @return Promise<string>
      */
-    async create(name: string, roles: Array<string> = ["owner"]): Promise<string> {
+    async create(name: string, roles: Array<any> = ["owner"]): Promise<string> {
         let path = '/teams';
         
         return await this.client.call('post', path, {
@@ -125,16 +125,24 @@ export class Teams extends Service {
      * for this list of resources.
      *
      * @param string teamId
+     * @param string search
+     * @param number limit
+     * @param number offset
+     * @param string orderType
      * @throws Exception
      * @return Promise<string>
      */
-    async getMemberships(teamId: string): Promise<string> {
+    async getMemberships(teamId: string, search: string = '', limit: number = 25, offset: number = 0, orderType: string = 'ASC'): Promise<string> {
         let path = '/teams/{teamId}/memberships'.replace(new RegExp('{teamId}', 'g'), teamId);
         
         return await this.client.call('get', path, {
                     'content-type': 'application/json',
                },
                {
+                'search': search,
+                'limit': limit,
+                'offset': offset,
+                'orderType': orderType
             });
     }
 
@@ -147,8 +155,8 @@ export class Teams extends Service {
      * 
      * Use the 'URL' parameter to redirect the user from the invitation email back
      * to your app. When the user is redirected, use the [Update Team Membership
-     * Status](/docs/teams#updateMembershipStatus) endpoint to allow the user to
-     * accept the invitation to the team.
+     * Status](/docs/client/teams#updateMembershipStatus) endpoint to allow the
+     * user to accept the invitation to the team.
      * 
      * Please note that in order to avoid a [Redirect
      * Attacks](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.md)
@@ -157,13 +165,13 @@ export class Teams extends Service {
      *
      * @param string teamId
      * @param string email
-     * @param Array<string> roles
+     * @param Array<any> roles
      * @param string url
      * @param string name
      * @throws Exception
      * @return Promise<string>
      */
-    async createMembership(teamId: string, email: string, roles: Array<string>, url: string, name: string = ''): Promise<string> {
+    async createMembership(teamId: string, email: string, roles: Array<any>, url: string, name: string = ''): Promise<string> {
         let path = '/teams/{teamId}/memberships'.replace(new RegExp('{teamId}', 'g'), teamId);
         
         return await this.client.call('post', path, {
