@@ -141,12 +141,10 @@ export class Database extends Service {
      * @param string orderType
      * @param string orderCast
      * @param string search
-     * @param number first
-     * @param number last
      * @throws Exception
      * @return Promise<string>
      */
-    async listDocuments(collectionId: string, filters: Array<any> = [], offset: number = 0, limit: number = 50, orderField: string = '$id', orderType: string = 'ASC', orderCast: string = 'string', search: string = '', first: number = 0, last: number = 0): Promise<string> {
+    async listDocuments(collectionId: string, filters: Array<any> = [], offset: number = 0, limit: number = 50, orderField: string = '$id', orderType: string = 'ASC', orderCast: string = 'string', search: string = ''): Promise<string> {
         let path = '/database/collections/{collectionId}/documents'.replace(new RegExp('{collectionId}', 'g'), collectionId);
         
         return await this.client.call('get', path, {
@@ -159,9 +157,7 @@ export class Database extends Service {
                 'orderField': orderField,
                 'orderType': orderType,
                 'orderCast': orderCast,
-                'search': search,
-                'first': first,
-                'last': last
+                'search': search
             });
     }
 
@@ -260,23 +256,6 @@ export class Database extends Service {
         let path = '/database/collections/{collectionId}/documents/{documentId}'.replace(new RegExp('{collectionId}', 'g'), collectionId).replace(new RegExp('{documentId}', 'g'), documentId);
         
         return await this.client.call('delete', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
-    }
-
-    /**
-     * Get Collection Logs
-     *
-     * @param string collectionId
-     * @throws Exception
-     * @return Promise<string>
-     */
-    async getCollectionLogs(collectionId: string): Promise<string> {
-        let path = '/database/collections/{collectionId}/logs'.replace(new RegExp('{collectionId}', 'g'), collectionId);
-        
-        return await this.client.call('get', path, {
                     'content-type': 'application/json',
                },
                {

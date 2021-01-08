@@ -125,16 +125,24 @@ export class Teams extends Service {
      * for this list of resources.
      *
      * @param string teamId
+     * @param string search
+     * @param number limit
+     * @param number offset
+     * @param string orderType
      * @throws Exception
      * @return Promise<string>
      */
-    async getMemberships(teamId: string): Promise<string> {
+    async getMemberships(teamId: string, search: string = '', limit: number = 25, offset: number = 0, orderType: string = 'ASC'): Promise<string> {
         let path = '/teams/{teamId}/memberships'.replace(new RegExp('{teamId}', 'g'), teamId);
         
         return await this.client.call('get', path, {
                     'content-type': 'application/json',
                },
                {
+                'search': search,
+                'limit': limit,
+                'offset': offset,
+                'orderType': orderType
             });
     }
 
