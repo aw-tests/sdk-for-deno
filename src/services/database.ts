@@ -8,7 +8,7 @@ export class Database extends Service {
      *
      * Get a list of all the user collections. You can use the query params to
      * filter your results. On admin mode, this endpoint will return a list of all
-     * of the project collections. [Learn more about different API
+     * of the project's collections. [Learn more about different API
      * modes](/docs/admin).
      *
      * @param string search
@@ -61,7 +61,7 @@ export class Database extends Service {
     /**
      * Get Collection
      *
-     * Get collection by its unique ID. This endpoint response returns a JSON
+     * Get a collection by its unique ID. This endpoint response returns a JSON
      * object with the collection metadata.
      *
      * @param string collectionId
@@ -81,7 +81,7 @@ export class Database extends Service {
     /**
      * Update Collection
      *
-     * Update collection by its unique ID.
+     * Update a collection by its unique ID.
      *
      * @param string collectionId
      * @param string name
@@ -130,13 +130,13 @@ export class Database extends Service {
      *
      * Get a list of all the user documents. You can use the query params to
      * filter your results. On admin mode, this endpoint will return a list of all
-     * of the project documents. [Learn more about different API
+     * of the project's documents. [Learn more about different API
      * modes](/docs/admin).
      *
      * @param string collectionId
      * @param Array<any> filters
-     * @param number offset
      * @param number limit
+     * @param number offset
      * @param string orderField
      * @param string orderType
      * @param string orderCast
@@ -144,7 +144,7 @@ export class Database extends Service {
      * @throws Exception
      * @return Promise<string>
      */
-    async listDocuments(collectionId: string, filters: Array<any> = [], offset: number = 0, limit: number = 50, orderField: string = '$id', orderType: string = 'ASC', orderCast: string = 'string', search: string = ''): Promise<string> {
+    async listDocuments(collectionId: string, filters: Array<any> = [], limit: number = 25, offset: number = 0, orderField: string = '', orderType: string = 'ASC', orderCast: string = 'string', search: string = ''): Promise<string> {
         let path = '/database/collections/{collectionId}/documents'.replace(new RegExp('{collectionId}', 'g'), collectionId);
         
         return await this.client.call('get', path, {
@@ -152,8 +152,8 @@ export class Database extends Service {
                },
                {
                 'filters': filters,
-                'offset': offset,
                 'limit': limit,
+                'offset': offset,
                 'orderField': orderField,
                 'orderType': orderType,
                 'orderCast': orderCast,
@@ -198,8 +198,8 @@ export class Database extends Service {
     /**
      * Get Document
      *
-     * Get document by its unique ID. This endpoint response returns a JSON object
-     * with the document data.
+     * Get a document by its unique ID. This endpoint response returns a JSON
+     * object with the document data.
      *
      * @param string collectionId
      * @param string documentId
@@ -218,6 +218,9 @@ export class Database extends Service {
 
     /**
      * Update Document
+     *
+     * Update a document by its unique ID. Using the patch method you can pass
+     * only specific fields that will get updated.
      *
      * @param string collectionId
      * @param string documentId
@@ -243,8 +246,8 @@ export class Database extends Service {
     /**
      * Delete Document
      *
-     * Delete document by its unique ID. This endpoint deletes only the parent
-     * documents, his attributes and relations to other documents. Child documents
+     * Delete a document by its unique ID. This endpoint deletes only the parent
+     * documents, its attributes and relations to other documents. Child documents
      * **will not** be deleted.
      *
      * @param string collectionId
