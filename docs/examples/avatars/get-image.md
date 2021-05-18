@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = avatars.getImage('https://example.com');
+let promise = avatars.getImage('');
 
 promise.then(function (response) {
     console.log(response);

@@ -156,8 +156,8 @@ export class Teams extends Service {
      * 
      * Use the 'URL' parameter to redirect the user from the invitation email back
      * to your app. When the user is redirected, use the [Update Team Membership
-     * Status](/docs/client/teams#updateMembershipStatus) endpoint to allow the
-     * user to accept the invitation to the team.
+     * Status](/docs/client/teams#teamsUpdateMembershipStatus) endpoint to allow
+     * the user to accept the invitation to the team.
      * 
      * Please note that in order to avoid a [Redirect
      * Attacks](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.md)
@@ -205,6 +205,32 @@ export class Teams extends Service {
                     'content-type': 'application/json',
                },
                {
+            });
+    }
+
+    /**
+     * Update Team Membership Status
+     *
+     * Use this endpoint to allow a user to accept an invitation to join a team
+     * after being redirected back to your app from the invitation email recieved
+     * by the user.
+     *
+     * @param string teamId
+     * @param string inviteId
+     * @param string userId
+     * @param string secret
+     * @throws Exception
+     * @return Promise<string>
+     */
+    async updateMembershipStatus(teamId: string, inviteId: string, userId: string, secret: string): Promise<string> {
+        let path = '/teams/{teamId}/memberships/{inviteId}/status'.replace(new RegExp('{teamId}', 'g'), teamId).replace(new RegExp('{inviteId}', 'g'), inviteId);
+        
+        return await this.client.call('patch', path, {
+                    'content-type': 'application/json',
+               },
+               {
+                'userId': userId,
+                'secret': secret
             });
     }
 }

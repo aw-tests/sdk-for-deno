@@ -82,7 +82,7 @@ export class Users extends Service {
      * @throws Exception
      * @return Promise<string>
      */
-    async deleteUser(userId: string): Promise<string> {
+    async delete(userId: string): Promise<string> {
         let path = '/users/{userId}'.replace(new RegExp('{userId}', 'g'), userId);
         
         return await this.client.call('delete', path, {
