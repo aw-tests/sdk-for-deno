@@ -20,7 +20,7 @@ export class Storage extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async listFiles(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Response> {
+    async listFiles(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Models.FileList> {
         let path = '/storage/files';
         let payload: Payload = {};
 
@@ -66,7 +66,7 @@ export class Storage extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createFile(fileId: string, file: File | Blob, read?: string[], write?: string[]): Promise<Response> {
+    async createFile(fileId: string, file: File | Blob, read?: string[], write?: string[]): Promise<Models.File> {
         if (typeof fileId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "fileId"');
         }
@@ -108,7 +108,7 @@ export class Storage extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getFile(fileId: string): Promise<Response> {
+    async getFile(fileId: string): Promise<Models.File> {
         if (typeof fileId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "fileId"');
         }
@@ -132,7 +132,7 @@ export class Storage extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateFile(fileId: string, read: string[], write: string[]): Promise<Response> {
+    async updateFile(fileId: string, read: string[], write: string[]): Promise<Models.File> {
         if (typeof fileId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "fileId"');
         }

@@ -19,7 +19,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async list(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Response> {
+    async list<Preferences extends Models.Preferences>(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Models.UserList<Preferences>> {
         let path = '/users';
         let payload: Payload = {};
 
@@ -63,7 +63,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async create(userId: string, email: string, password: string, name?: string): Promise<Response> {
+    async create<Preferences extends Models.Preferences>(userId: string, email: string, password: string, name?: string): Promise<Models.User<Preferences>> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -108,7 +108,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async get(userId: string): Promise<Response> {
+    async get<Preferences extends Models.Preferences>(userId: string): Promise<Models.User<Preferences>> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -151,7 +151,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateEmail(userId: string, email: string): Promise<Response> {
+    async updateEmail<Preferences extends Models.Preferences>(userId: string, email: string): Promise<Models.User<Preferences>> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -177,16 +177,26 @@ export class Users extends Service {
      * Get the user activity logs list by its unique ID.
      *
      * @param {string} userId
+     * @param {number} limit
+     * @param {number} offset
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getLogs(userId: string): Promise<Response> {
+    async getLogs(userId: string, limit?: number, offset?: number): Promise<Models.LogList> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
 
         let path = '/users/{userId}/logs'.replace('{userId}', userId);
         let payload: Payload = {};
+
+        if (typeof limit !== 'undefined') {
+            payload['limit'] = limit;
+        }
+
+        if (typeof offset !== 'undefined') {
+            payload['offset'] = offset;
+        }
 
         return await this.client.call('get', path, {
             'content-type': 'application/json',
@@ -202,7 +212,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateName(userId: string, name: string): Promise<Response> {
+    async updateName<Preferences extends Models.Preferences>(userId: string, name: string): Promise<Models.User<Preferences>> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -232,7 +242,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updatePassword(userId: string, password: string): Promise<Response> {
+    async updatePassword<Preferences extends Models.Preferences>(userId: string, password: string): Promise<Models.User<Preferences>> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -261,7 +271,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getPrefs(userId: string): Promise<Response> {
+    async getPrefs<Preferences extends Models.Preferences>(userId: string): Promise<Preferences> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -284,7 +294,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updatePrefs(userId: string, prefs: object): Promise<Response> {
+    async updatePrefs<Preferences extends Models.Preferences>(userId: string, prefs: object): Promise<Preferences> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -313,7 +323,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getSessions(userId: string): Promise<Response> {
+    async getSessions(userId: string): Promise<Models.SessionList> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -382,7 +392,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateStatus(userId: string, status: boolean): Promise<Response> {
+    async updateStatus<Preferences extends Models.Preferences>(userId: string, status: boolean): Promise<Models.User<Preferences>> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -412,7 +422,7 @@ export class Users extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateVerification(userId: string, emailVerification: boolean): Promise<Response> {
+    async updateVerification<Preferences extends Models.Preferences>(userId: string, emailVerification: boolean): Promise<Models.User<Preferences>> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }

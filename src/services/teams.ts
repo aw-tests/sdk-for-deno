@@ -21,7 +21,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async list(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Response> {
+    async list(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Models.TeamList> {
         let path = '/teams';
         let payload: Payload = {};
 
@@ -67,7 +67,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async create(teamId: string, name: string, roles?: string[]): Promise<Response> {
+    async create(teamId: string, name: string, roles?: string[]): Promise<Models.Team> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }
@@ -105,7 +105,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async get(teamId: string): Promise<Response> {
+    async get(teamId: string): Promise<Models.Team> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }
@@ -128,7 +128,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async update(teamId: string, name: string): Promise<Response> {
+    async update(teamId: string, name: string): Promise<Models.Team> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }
@@ -186,7 +186,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getMemberships(teamId: string, search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Response> {
+    async getMemberships(teamId: string, search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Models.MembershipList> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }
@@ -250,7 +250,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createMembership(teamId: string, email: string, roles: string[], url: string, name?: string): Promise<Response> {
+    async createMembership(teamId: string, email: string, roles: string[], url: string, name?: string): Promise<Models.Membership> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }
@@ -301,7 +301,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getMembership(teamId: string, membershipId: string): Promise<Response> {
+    async getMembership(teamId: string, membershipId: string): Promise<Models.MembershipList> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }
@@ -326,7 +326,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateMembershipRoles(teamId: string, membershipId: string, roles: string[]): Promise<Response> {
+    async updateMembershipRoles(teamId: string, membershipId: string, roles: string[]): Promise<Models.Membership> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }
@@ -392,7 +392,7 @@ export class Teams extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateMembershipStatus(teamId: string, membershipId: string, userId: string, secret: string): Promise<Response> {
+    async updateMembershipStatus(teamId: string, membershipId: string, userId: string, secret: string): Promise<Models.Membership> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }

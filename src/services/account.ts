@@ -12,7 +12,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async get(): Promise<Response> {
+    async get<Preferences extends Models.Preferences>(): Promise<Models.User<Preferences>> {
         let path = '/account';
         let payload: Payload = {};
 
@@ -55,7 +55,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateEmail(email: string, password: string): Promise<Response> {
+    async updateEmail<Preferences extends Models.Preferences>(email: string, password: string): Promise<Models.User<Preferences>> {
         if (typeof email === 'undefined') {
             throw new AppwriteException('Missing required parameter: "email"');
         }
@@ -85,12 +85,22 @@ export class Account extends Service {
      * Get currently logged in user list of latest security activity logs. Each
      * log returns user IP address, location and date and time of log.
      *
+     * @param {number} limit
+     * @param {number} offset
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getLogs(): Promise<Response> {
+    async getLogs(limit?: number, offset?: number): Promise<Models.LogList> {
         let path = '/account/logs';
         let payload: Payload = {};
+
+        if (typeof limit !== 'undefined') {
+            payload['limit'] = limit;
+        }
+
+        if (typeof offset !== 'undefined') {
+            payload['offset'] = offset;
+        }
 
         return await this.client.call('get', path, {
             'content-type': 'application/json',
@@ -105,7 +115,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateName(name: string): Promise<Response> {
+    async updateName<Preferences extends Models.Preferences>(name: string): Promise<Models.User<Preferences>> {
         if (typeof name === 'undefined') {
             throw new AppwriteException('Missing required parameter: "name"');
         }
@@ -133,7 +143,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updatePassword(password: string, oldPassword?: string): Promise<Response> {
+    async updatePassword<Preferences extends Models.Preferences>(password: string, oldPassword?: string): Promise<Models.User<Preferences>> {
         if (typeof password === 'undefined') {
             throw new AppwriteException('Missing required parameter: "password"');
         }
@@ -161,7 +171,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getPrefs(): Promise<Response> {
+    async getPrefs<Preferences extends Models.Preferences>(): Promise<Preferences> {
         let path = '/account/prefs';
         let payload: Payload = {};
 
@@ -179,7 +189,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updatePrefs(prefs: object): Promise<Response> {
+    async updatePrefs<Preferences extends Models.Preferences>(prefs: object): Promise<Models.User<Preferences>> {
         if (typeof prefs === 'undefined') {
             throw new AppwriteException('Missing required parameter: "prefs"');
         }
@@ -212,7 +222,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createRecovery(email: string, url: string): Promise<Response> {
+    async createRecovery(email: string, url: string): Promise<Models.Token> {
         if (typeof email === 'undefined') {
             throw new AppwriteException('Missing required parameter: "email"');
         }
@@ -256,7 +266,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateRecovery(userId: string, secret: string, password: string, passwordAgain: string): Promise<Response> {
+    async updateRecovery(userId: string, secret: string, password: string, passwordAgain: string): Promise<Models.Token> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -305,7 +315,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getSessions(): Promise<Response> {
+    async getSessions(): Promise<Models.SessionList> {
         let path = '/account/sessions';
         let payload: Payload = {};
 
@@ -340,7 +350,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getSession(sessionId: string): Promise<Response> {
+    async getSession(sessionId: string): Promise<Models.Session> {
         if (typeof sessionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "sessionId"');
         }
@@ -398,7 +408,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createVerification(url: string): Promise<Response> {
+    async createVerification(url: string): Promise<Models.Token> {
         if (typeof url === 'undefined') {
             throw new AppwriteException('Missing required parameter: "url"');
         }
@@ -427,7 +437,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateVerification(userId: string, secret: string): Promise<Response> {
+    async updateVerification(userId: string, secret: string): Promise<Models.Token> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }

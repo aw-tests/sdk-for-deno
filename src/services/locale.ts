@@ -17,7 +17,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async get(): Promise<Response> {
+    async get(): Promise<Models.Locale> {
         let path = '/locale';
         let payload: Payload = {};
 
@@ -34,7 +34,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getContinents(): Promise<Response> {
+    async getContinents(): Promise<Models.ContinentList> {
         let path = '/locale/continents';
         let payload: Payload = {};
 
@@ -51,7 +51,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCountries(): Promise<Response> {
+    async getCountries(): Promise<Models.CountryList> {
         let path = '/locale/countries';
         let payload: Payload = {};
 
@@ -68,7 +68,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCountriesEU(): Promise<Response> {
+    async getCountriesEU(): Promise<Models.CountryList> {
         let path = '/locale/countries/eu';
         let payload: Payload = {};
 
@@ -85,7 +85,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCountriesPhones(): Promise<Response> {
+    async getCountriesPhones(): Promise<Models.PhoneList> {
         let path = '/locale/countries/phones';
         let payload: Payload = {};
 
@@ -103,7 +103,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCurrencies(): Promise<Response> {
+    async getCurrencies(): Promise<Models.CurrencyList> {
         let path = '/locale/currencies';
         let payload: Payload = {};
 
@@ -120,7 +120,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getLanguages(): Promise<Response> {
+    async getLanguages(): Promise<Models.LanguageList> {
         let path = '/locale/languages';
         let payload: Payload = {};
 

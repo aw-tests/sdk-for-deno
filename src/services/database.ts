@@ -21,7 +21,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async listCollections(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Response> {
+    async listCollections(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Models.CollectionList> {
         let path = '/database/collections';
         let payload: Payload = {};
 
@@ -61,12 +61,12 @@ export class Database extends Service {
      * @param {string} collectionId
      * @param {string} name
      * @param {string} permission
-     * @param {string} read
-     * @param {string} write
+     * @param {string[]} read
+     * @param {string[]} write
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createCollection(collectionId: string, name: string, permission: string, read: string, write: string): Promise<Response> {
+    async createCollection(collectionId: string, name: string, permission: string, read: string[], write: string[]): Promise<Models.Collection> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -124,7 +124,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCollection(collectionId: string): Promise<Response> {
+    async getCollection(collectionId: string): Promise<Models.Collection> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -144,12 +144,12 @@ export class Database extends Service {
      * @param {string} collectionId
      * @param {string} name
      * @param {string} permission
-     * @param {string} read
-     * @param {string} write
+     * @param {string[]} read
+     * @param {string[]} write
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateCollection(collectionId: string, name: string, permission: string, read?: string, write?: string): Promise<Response> {
+    async updateCollection(collectionId: string, name: string, permission: string, read?: string[], write?: string[]): Promise<Models.Collection> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -214,7 +214,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async listAttributes(collectionId: string): Promise<Response> {
+    async listAttributes(collectionId: string): Promise<Models.AttributeList> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -240,7 +240,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createBooleanAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: boolean, array?: boolean): Promise<Response> {
+    async createBooleanAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: boolean, array?: boolean): Promise<Models.AttributeBoolean> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -290,7 +290,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createEmailAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+    async createEmailAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Models.AttributeEmail> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -338,7 +338,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createEnumAttribute(collectionId: string, attributeId: string, elements: string[], required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+    async createEnumAttribute(collectionId: string, attributeId: string, elements: string[], required: boolean, xdefault?: string, array?: boolean): Promise<Models.AttributeEnum> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -399,7 +399,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createFloatAttribute(collectionId: string, attributeId: string, required: boolean, min?: string, max?: string, xdefault?: string, array?: boolean): Promise<Response> {
+    async createFloatAttribute(collectionId: string, attributeId: string, required: boolean, min?: string, max?: string, xdefault?: string, array?: boolean): Promise<Models.AttributeFloat> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -460,7 +460,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createIntegerAttribute(collectionId: string, attributeId: string, required: boolean, min?: number, max?: number, xdefault?: number, array?: boolean): Promise<Response> {
+    async createIntegerAttribute(collectionId: string, attributeId: string, required: boolean, min?: number, max?: number, xdefault?: number, array?: boolean): Promise<Models.AttributeInteger> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -518,7 +518,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createIpAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+    async createIpAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Models.AttributeIp> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -569,7 +569,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createStringAttribute(collectionId: string, attributeId: string, size: number, required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+    async createStringAttribute(collectionId: string, attributeId: string, size: number, required: boolean, xdefault?: string, array?: boolean): Promise<Models.AttributeString> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -627,7 +627,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createUrlAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+    async createUrlAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Models.AttributeUrl> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -730,7 +730,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async listDocuments(collectionId: string, queries?: string[], limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderAttributes?: string[], orderTypes?: string[]): Promise<Response> {
+    async listDocuments<Document extends Models.Document>(collectionId: string, queries?: string[], limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderAttributes?: string[], orderTypes?: string[]): Promise<Models.DocumentList<Document>> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -781,12 +781,12 @@ export class Database extends Service {
      * @param {string} collectionId
      * @param {string} documentId
      * @param {object} data
-     * @param {string} read
-     * @param {string} write
+     * @param {string[]} read
+     * @param {string[]} write
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createDocument(collectionId: string, documentId: string, data: object, read?: string, write?: string): Promise<Response> {
+    async createDocument<Document extends Models.Document>(collectionId: string, documentId: string, data: object, read?: string[], write?: string[]): Promise<Document> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -833,7 +833,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getDocument(collectionId: string, documentId: string): Promise<Response> {
+    async getDocument<Document extends Models.Document>(collectionId: string, documentId: string): Promise<Document> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -858,12 +858,12 @@ export class Database extends Service {
      * @param {string} collectionId
      * @param {string} documentId
      * @param {object} data
-     * @param {string} read
-     * @param {string} write
+     * @param {string[]} read
+     * @param {string[]} write
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateDocument(collectionId: string, documentId: string, data: object, read?: string, write?: string): Promise<Response> {
+    async updateDocument<Document extends Models.Document>(collectionId: string, documentId: string, data: object, read?: string[], write?: string[]): Promise<Document> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -930,7 +930,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async listIndexes(collectionId: string): Promise<Response> {
+    async listIndexes(collectionId: string): Promise<Models.IndexList> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -953,7 +953,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createIndex(collectionId: string, indexId: string, type: string, attributes: string[], orders?: string[]): Promise<Response> {
+    async createIndex(collectionId: string, indexId: string, type: string, attributes: string[], orders?: string[]): Promise<Models.Index> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }
@@ -1001,7 +1001,7 @@ export class Database extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getIndex(collectionId: string, indexId: string): Promise<Response> {
+    async getIndex(collectionId: string, indexId: string): Promise<Models.Index> {
         if (typeof collectionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "collectionId"');
         }

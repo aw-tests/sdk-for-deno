@@ -69,6 +69,10 @@ export namespace Models {
      */
     export type LogList = { 
         /**
+         * Total number of items available on the server.
+         */
+        sum: number;
+        /**
          * List of logs.
          */
         logs: Log[];
