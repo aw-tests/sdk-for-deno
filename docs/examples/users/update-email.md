@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = users.create('', 'email@example.com', 'password');
+let promise = users.updateEmail('[USER_ID]', 'email@example.com');
 
 promise.then(function (response) {
     console.log(response);

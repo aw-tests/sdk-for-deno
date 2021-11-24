@@ -1,8 +1,9 @@
-import { Service } from "../service.ts";
-import { DocumentData } from '../client.ts'
+import { Service } from '../service.ts';
+import { Payload } from '../client.ts';
+import { AppwriteException } from '../exception.ts';
+import type { Models } from '../models.d.ts'
 
 export class Avatars extends Service {
-
     /**
      * Get Browser Icon
      *
@@ -11,26 +12,37 @@ export class Avatars extends Service {
      * /account/sessions endpoint. Use width, height and quality arguments to
      * change the output settings.
      *
-     * @param string code
-     * @param number width
-     * @param number height
-     * @param number quality
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} code
+     * @param {number} width
+     * @param {number} height
+     * @param {number} quality
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getBrowser(code: string, width: number = 100, height: number = 100, quality: number = 100): Promise<string> {
-        let path = '/avatars/browsers/{code}'.replace(new RegExp('{code}', 'g'), code);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'width': width,
-                'height': height,
-                'quality': quality
-            });
-    }
+    async getBrowser(code: string, width?: number, height?: number, quality?: number): Promise<Response> {
+        if (typeof code === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "code"');
+        }
 
+        let path = '/avatars/browsers/{code}'.replace('{code}', code);
+        let payload: Payload = {};
+
+        if (typeof width !== 'undefined') {
+            payload['width'] = width;
+        }
+
+        if (typeof height !== 'undefined') {
+            payload['height'] = height;
+        }
+
+        if (typeof quality !== 'undefined') {
+            payload['quality'] = quality;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get Credit Card Icon
      *
@@ -38,26 +50,37 @@ export class Avatars extends Service {
      * provider you need. Use width, height and quality arguments to change the
      * output settings.
      *
-     * @param string code
-     * @param number width
-     * @param number height
-     * @param number quality
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} code
+     * @param {number} width
+     * @param {number} height
+     * @param {number} quality
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getCreditCard(code: string, width: number = 100, height: number = 100, quality: number = 100): Promise<string> {
-        let path = '/avatars/credit-cards/{code}'.replace(new RegExp('{code}', 'g'), code);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'width': width,
-                'height': height,
-                'quality': quality
-            });
-    }
+    async getCreditCard(code: string, width?: number, height?: number, quality?: number): Promise<Response> {
+        if (typeof code === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "code"');
+        }
 
+        let path = '/avatars/credit-cards/{code}'.replace('{code}', code);
+        let payload: Payload = {};
+
+        if (typeof width !== 'undefined') {
+            payload['width'] = width;
+        }
+
+        if (typeof height !== 'undefined') {
+            payload['height'] = height;
+        }
+
+        if (typeof quality !== 'undefined') {
+            payload['quality'] = quality;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get Favicon
      *
@@ -65,21 +88,26 @@ export class Avatars extends Service {
      * website URL.
      * 
      *
-     * @param string url
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} url
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getFavicon(url: string): Promise<string> {
-        let path = '/avatars/favicon';
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'url': url
-            });
-    }
+    async getFavicon(url: string): Promise<Response> {
+        if (typeof url === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "url"');
+        }
 
+        let path = '/avatars/favicon';
+        let payload: Payload = {};
+
+        if (typeof url !== 'undefined') {
+            payload['url'] = url;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get Country Flag
      *
@@ -87,26 +115,37 @@ export class Avatars extends Service {
      * users. The code argument receives the 2 letter country code. Use width,
      * height and quality arguments to change the output settings.
      *
-     * @param string code
-     * @param number width
-     * @param number height
-     * @param number quality
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} code
+     * @param {number} width
+     * @param {number} height
+     * @param {number} quality
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getFlag(code: string, width: number = 100, height: number = 100, quality: number = 100): Promise<string> {
-        let path = '/avatars/flags/{code}'.replace(new RegExp('{code}', 'g'), code);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'width': width,
-                'height': height,
-                'quality': quality
-            });
-    }
+    async getFlag(code: string, width?: number, height?: number, quality?: number): Promise<Response> {
+        if (typeof code === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "code"');
+        }
 
+        let path = '/avatars/flags/{code}'.replace('{code}', code);
+        let payload: Payload = {};
+
+        if (typeof width !== 'undefined') {
+            payload['width'] = width;
+        }
+
+        if (typeof height !== 'undefined') {
+            payload['height'] = height;
+        }
+
+        if (typeof quality !== 'undefined') {
+            payload['quality'] = quality;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get Image from URL
      *
@@ -115,25 +154,36 @@ export class Avatars extends Service {
      * remote images in your app or in case you want to make sure a 3rd party
      * image is properly served using a TLS protocol.
      *
-     * @param string url
-     * @param number width
-     * @param number height
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} url
+     * @param {number} width
+     * @param {number} height
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getImage(url: string, width: number = 400, height: number = 400): Promise<string> {
-        let path = '/avatars/image';
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'url': url,
-                'width': width,
-                'height': height
-            });
-    }
+    async getImage(url: string, width?: number, height?: number): Promise<Response> {
+        if (typeof url === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "url"');
+        }
 
+        let path = '/avatars/image';
+        let payload: Payload = {};
+
+        if (typeof url !== 'undefined') {
+            payload['url'] = url;
+        }
+
+        if (typeof width !== 'undefined') {
+            payload['width'] = width;
+        }
+
+        if (typeof height !== 'undefined') {
+            payload['height'] = height;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get User Initials
      *
@@ -148,53 +198,81 @@ export class Avatars extends Service {
      * the user's initials when reloading the same theme will always return for
      * the same initials.
      *
-     * @param string name
-     * @param number width
-     * @param number height
-     * @param string color
-     * @param string background
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} name
+     * @param {number} width
+     * @param {number} height
+     * @param {string} color
+     * @param {string} background
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getInitials(name: string = '', width: number = 500, height: number = 500, color: string = '', background: string = ''): Promise<string> {
+    async getInitials(name?: string, width?: number, height?: number, color?: string, background?: string): Promise<Response> {
         let path = '/avatars/initials';
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'name': name,
-                'width': width,
-                'height': height,
-                'color': color,
-                'background': background
-            });
-    }
+        let payload: Payload = {};
 
+        if (typeof name !== 'undefined') {
+            payload['name'] = name;
+        }
+
+        if (typeof width !== 'undefined') {
+            payload['width'] = width;
+        }
+
+        if (typeof height !== 'undefined') {
+            payload['height'] = height;
+        }
+
+        if (typeof color !== 'undefined') {
+            payload['color'] = color;
+        }
+
+        if (typeof background !== 'undefined') {
+            payload['background'] = background;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get QR Code
      *
      * Converts a given plain text to a QR code image. You can use the query
      * parameters to change the size and style of the resulting image.
      *
-     * @param string text
-     * @param number size
-     * @param number margin
-     * @param boolean download
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} text
+     * @param {number} size
+     * @param {number} margin
+     * @param {boolean} download
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getQR(text: string, size: number = 400, margin: number = 1, download: boolean = false): Promise<string> {
+    async getQR(text: string, size?: number, margin?: number, download?: boolean): Promise<Response> {
+        if (typeof text === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "text"');
+        }
+
         let path = '/avatars/qr';
-        
+        let payload: Payload = {};
+
+        if (typeof text !== 'undefined') {
+            payload['text'] = text;
+        }
+
+        if (typeof size !== 'undefined') {
+            payload['size'] = size;
+        }
+
+        if (typeof margin !== 'undefined') {
+            payload['margin'] = margin;
+        }
+
+        if (typeof download !== 'undefined') {
+            payload['download'] = download;
+        }
+
         return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'text': text,
-                'size': size,
-                'margin': margin,
-                'download': download
-            });
+            'content-type': 'application/json',
+        }, payload);
     }
 }

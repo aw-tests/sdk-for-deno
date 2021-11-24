@@ -1,8 +1,9 @@
-import { Service } from "../service.ts";
-import { DocumentData } from '../client.ts'
+import { Service } from '../service.ts';
+import { Payload } from '../client.ts';
+import { AppwriteException } from '../exception.ts';
+import type { Models } from '../models.d.ts'
 
 export class Database extends Service {
-
     /**
      * List Collections
      *
@@ -11,120 +12,705 @@ export class Database extends Service {
      * of the project's collections. [Learn more about different API
      * modes](/docs/admin).
      *
-     * @param string search
-     * @param number limit
-     * @param number offset
-     * @param string orderType
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} search
+     * @param {number} limit
+     * @param {number} offset
+     * @param {string} cursor
+     * @param {string} cursorDirection
+     * @param {string} orderType
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async listCollections(search: string = '', limit: number = 25, offset: number = 0, orderType: string = 'ASC'): Promise<string> {
+    async listCollections(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Response> {
         let path = '/database/collections';
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'search': search,
-                'limit': limit,
-                'offset': offset,
-                'orderType': orderType
-            });
-    }
+        let payload: Payload = {};
 
+        if (typeof search !== 'undefined') {
+            payload['search'] = search;
+        }
+
+        if (typeof limit !== 'undefined') {
+            payload['limit'] = limit;
+        }
+
+        if (typeof offset !== 'undefined') {
+            payload['offset'] = offset;
+        }
+
+        if (typeof cursor !== 'undefined') {
+            payload['cursor'] = cursor;
+        }
+
+        if (typeof cursorDirection !== 'undefined') {
+            payload['cursorDirection'] = cursorDirection;
+        }
+
+        if (typeof orderType !== 'undefined') {
+            payload['orderType'] = orderType;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Create Collection
      *
      * Create a new Collection.
      *
-     * @param string name
-     * @param Array<any> read
-     * @param Array<any> write
-     * @param Array<any> rules
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @param {string} name
+     * @param {string} permission
+     * @param {string} read
+     * @param {string} write
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async createCollection(name: string, read: Array<any>, write: Array<any>, rules: Array<any>): Promise<string> {
-        let path = '/database/collections';
-        
-        return await this.client.call('post', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'name': name,
-                'read': read,
-                'write': write,
-                'rules': rules
-            });
-    }
+    async createCollection(collectionId: string, name: string, permission: string, read: string, write: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
 
+        if (typeof name === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "name"');
+        }
+
+        if (typeof permission === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "permission"');
+        }
+
+        if (typeof read === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "read"');
+        }
+
+        if (typeof write === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "write"');
+        }
+
+        let path = '/database/collections';
+        let payload: Payload = {};
+
+        if (typeof collectionId !== 'undefined') {
+            payload['collectionId'] = collectionId;
+        }
+
+        if (typeof name !== 'undefined') {
+            payload['name'] = name;
+        }
+
+        if (typeof permission !== 'undefined') {
+            payload['permission'] = permission;
+        }
+
+        if (typeof read !== 'undefined') {
+            payload['read'] = read;
+        }
+
+        if (typeof write !== 'undefined') {
+            payload['write'] = write;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get Collection
      *
      * Get a collection by its unique ID. This endpoint response returns a JSON
      * object with the collection metadata.
      *
-     * @param string collectionId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getCollection(collectionId: string): Promise<string> {
-        let path = '/database/collections/{collectionId}'.replace(new RegExp('{collectionId}', 'g'), collectionId);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
-    }
+    async getCollection(collectionId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
 
+        let path = '/database/collections/{collectionId}'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Update Collection
      *
      * Update a collection by its unique ID.
      *
-     * @param string collectionId
-     * @param string name
-     * @param Array<any> read
-     * @param Array<any> write
-     * @param Array<any> rules
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @param {string} name
+     * @param {string} permission
+     * @param {string} read
+     * @param {string} write
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async updateCollection(collectionId: string, name: string, read: Array<any> = [], write: Array<any> = [], rules: Array<any> = []): Promise<string> {
-        let path = '/database/collections/{collectionId}'.replace(new RegExp('{collectionId}', 'g'), collectionId);
-        
-        return await this.client.call('put', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'name': name,
-                'read': read,
-                'write': write,
-                'rules': rules
-            });
-    }
+    async updateCollection(collectionId: string, name: string, permission: string, read?: string, write?: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
 
+        if (typeof name === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "name"');
+        }
+
+        if (typeof permission === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "permission"');
+        }
+
+        let path = '/database/collections/{collectionId}'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof name !== 'undefined') {
+            payload['name'] = name;
+        }
+
+        if (typeof permission !== 'undefined') {
+            payload['permission'] = permission;
+        }
+
+        if (typeof read !== 'undefined') {
+            payload['read'] = read;
+        }
+
+        if (typeof write !== 'undefined') {
+            payload['write'] = write;
+        }
+
+        return await this.client.call('put', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Delete Collection
      *
      * Delete a collection by its unique ID. Only users with write permissions
      * have access to delete this resource.
      *
-     * @param string collectionId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async deleteCollection(collectionId: string): Promise<string> {
-        let path = '/database/collections/{collectionId}'.replace(new RegExp('{collectionId}', 'g'), collectionId);
-        
-        return await this.client.call('delete', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
-    }
+    async deleteCollection(collectionId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
 
+        let path = '/database/collections/{collectionId}'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        return await this.client.call('delete', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * List Attributes
+     *
+     * @param {string} collectionId
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async listAttributes(collectionId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create Boolean Attribute
+     *
+     * Create a boolean attribute.
+     * 
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @param {boolean} required
+     * @param {boolean} xdefault
+     * @param {boolean} array
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createBooleanAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: boolean, array?: boolean): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        if (typeof required === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "required"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/boolean'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof attributeId !== 'undefined') {
+            payload['attributeId'] = attributeId;
+        }
+
+        if (typeof required !== 'undefined') {
+            payload['required'] = required;
+        }
+
+        if (typeof xdefault !== 'undefined') {
+            payload['default'] = xdefault;
+        }
+
+        if (typeof array !== 'undefined') {
+            payload['array'] = array;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create Email Attribute
+     *
+     * Create an email attribute.
+     * 
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @param {boolean} required
+     * @param {string} xdefault
+     * @param {boolean} array
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createEmailAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        if (typeof required === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "required"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/email'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof attributeId !== 'undefined') {
+            payload['attributeId'] = attributeId;
+        }
+
+        if (typeof required !== 'undefined') {
+            payload['required'] = required;
+        }
+
+        if (typeof xdefault !== 'undefined') {
+            payload['default'] = xdefault;
+        }
+
+        if (typeof array !== 'undefined') {
+            payload['array'] = array;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create Enum Attribute
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @param {string[]} elements
+     * @param {boolean} required
+     * @param {string} xdefault
+     * @param {boolean} array
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createEnumAttribute(collectionId: string, attributeId: string, elements: string[], required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        if (typeof elements === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "elements"');
+        }
+
+        if (typeof required === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "required"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/enum'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof attributeId !== 'undefined') {
+            payload['attributeId'] = attributeId;
+        }
+
+        if (typeof elements !== 'undefined') {
+            payload['elements'] = elements;
+        }
+
+        if (typeof required !== 'undefined') {
+            payload['required'] = required;
+        }
+
+        if (typeof xdefault !== 'undefined') {
+            payload['default'] = xdefault;
+        }
+
+        if (typeof array !== 'undefined') {
+            payload['array'] = array;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create Float Attribute
+     *
+     * Create a float attribute. Optionally, minimum and maximum values can be
+     * provided.
+     * 
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @param {boolean} required
+     * @param {string} min
+     * @param {string} max
+     * @param {string} xdefault
+     * @param {boolean} array
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createFloatAttribute(collectionId: string, attributeId: string, required: boolean, min?: string, max?: string, xdefault?: string, array?: boolean): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        if (typeof required === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "required"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/float'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof attributeId !== 'undefined') {
+            payload['attributeId'] = attributeId;
+        }
+
+        if (typeof required !== 'undefined') {
+            payload['required'] = required;
+        }
+
+        if (typeof min !== 'undefined') {
+            payload['min'] = min;
+        }
+
+        if (typeof max !== 'undefined') {
+            payload['max'] = max;
+        }
+
+        if (typeof xdefault !== 'undefined') {
+            payload['default'] = xdefault;
+        }
+
+        if (typeof array !== 'undefined') {
+            payload['array'] = array;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create Integer Attribute
+     *
+     * Create an integer attribute. Optionally, minimum and maximum values can be
+     * provided.
+     * 
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @param {boolean} required
+     * @param {number} min
+     * @param {number} max
+     * @param {number} xdefault
+     * @param {boolean} array
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createIntegerAttribute(collectionId: string, attributeId: string, required: boolean, min?: number, max?: number, xdefault?: number, array?: boolean): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        if (typeof required === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "required"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/integer'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof attributeId !== 'undefined') {
+            payload['attributeId'] = attributeId;
+        }
+
+        if (typeof required !== 'undefined') {
+            payload['required'] = required;
+        }
+
+        if (typeof min !== 'undefined') {
+            payload['min'] = min;
+        }
+
+        if (typeof max !== 'undefined') {
+            payload['max'] = max;
+        }
+
+        if (typeof xdefault !== 'undefined') {
+            payload['default'] = xdefault;
+        }
+
+        if (typeof array !== 'undefined') {
+            payload['array'] = array;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create IP Address Attribute
+     *
+     * Create IP address attribute.
+     * 
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @param {boolean} required
+     * @param {string} xdefault
+     * @param {boolean} array
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createIpAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        if (typeof required === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "required"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/ip'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof attributeId !== 'undefined') {
+            payload['attributeId'] = attributeId;
+        }
+
+        if (typeof required !== 'undefined') {
+            payload['required'] = required;
+        }
+
+        if (typeof xdefault !== 'undefined') {
+            payload['default'] = xdefault;
+        }
+
+        if (typeof array !== 'undefined') {
+            payload['array'] = array;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create String Attribute
+     *
+     * Create a new string attribute.
+     * 
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @param {number} size
+     * @param {boolean} required
+     * @param {string} xdefault
+     * @param {boolean} array
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createStringAttribute(collectionId: string, attributeId: string, size: number, required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        if (typeof size === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "size"');
+        }
+
+        if (typeof required === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "required"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/string'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof attributeId !== 'undefined') {
+            payload['attributeId'] = attributeId;
+        }
+
+        if (typeof size !== 'undefined') {
+            payload['size'] = size;
+        }
+
+        if (typeof required !== 'undefined') {
+            payload['required'] = required;
+        }
+
+        if (typeof xdefault !== 'undefined') {
+            payload['default'] = xdefault;
+        }
+
+        if (typeof array !== 'undefined') {
+            payload['array'] = array;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create URL Attribute
+     *
+     * Create a URL attribute.
+     * 
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @param {boolean} required
+     * @param {string} xdefault
+     * @param {boolean} array
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createUrlAttribute(collectionId: string, attributeId: string, required: boolean, xdefault?: string, array?: boolean): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        if (typeof required === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "required"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/url'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof attributeId !== 'undefined') {
+            payload['attributeId'] = attributeId;
+        }
+
+        if (typeof required !== 'undefined') {
+            payload['required'] = required;
+        }
+
+        if (typeof xdefault !== 'undefined') {
+            payload['default'] = xdefault;
+        }
+
+        if (typeof array !== 'undefined') {
+            payload['array'] = array;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Get Attribute
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async getAttribute(collectionId: string, attributeId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/{attributeId}'.replace('{collectionId}', collectionId).replace('{attributeId}', attributeId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Delete Attribute
+     *
+     * @param {string} collectionId
+     * @param {string} attributeId
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async deleteAttribute(collectionId: string, attributeId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof attributeId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributeId"');
+        }
+
+        let path = '/database/collections/{collectionId}/attributes/{attributeId}'.replace('{collectionId}', collectionId).replace('{attributeId}', attributeId);
+        let payload: Payload = {};
+
+        return await this.client.call('delete', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * List Documents
      *
@@ -133,34 +719,57 @@ export class Database extends Service {
      * of the project's documents. [Learn more about different API
      * modes](/docs/admin).
      *
-     * @param string collectionId
-     * @param Array<any> filters
-     * @param number limit
-     * @param number offset
-     * @param string orderField
-     * @param string orderType
-     * @param string orderCast
-     * @param string search
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @param {string[]} queries
+     * @param {number} limit
+     * @param {number} offset
+     * @param {string} cursor
+     * @param {string} cursorDirection
+     * @param {string[]} orderAttributes
+     * @param {string[]} orderTypes
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async listDocuments(collectionId: string, filters: Array<any> = [], limit: number = 25, offset: number = 0, orderField: string = '', orderType: string = 'ASC', orderCast: string = 'string', search: string = ''): Promise<string> {
-        let path = '/database/collections/{collectionId}/documents'.replace(new RegExp('{collectionId}', 'g'), collectionId);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'filters': filters,
-                'limit': limit,
-                'offset': offset,
-                'orderField': orderField,
-                'orderType': orderType,
-                'orderCast': orderCast,
-                'search': search
-            });
-    }
+    async listDocuments(collectionId: string, queries?: string[], limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderAttributes?: string[], orderTypes?: string[]): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
 
+        let path = '/database/collections/{collectionId}/documents'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof queries !== 'undefined') {
+            payload['queries'] = queries;
+        }
+
+        if (typeof limit !== 'undefined') {
+            payload['limit'] = limit;
+        }
+
+        if (typeof offset !== 'undefined') {
+            payload['offset'] = offset;
+        }
+
+        if (typeof cursor !== 'undefined') {
+            payload['cursor'] = cursor;
+        }
+
+        if (typeof cursorDirection !== 'undefined') {
+            payload['cursorDirection'] = cursorDirection;
+        }
+
+        if (typeof orderAttributes !== 'undefined') {
+            payload['orderAttributes'] = orderAttributes;
+        }
+
+        if (typeof orderTypes !== 'undefined') {
+            payload['orderTypes'] = orderTypes;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Create Document
      *
@@ -169,80 +778,123 @@ export class Database extends Service {
      * integration](/docs/server/database#databaseCreateCollection) API or
      * directly from your database console.
      *
-     * @param string collectionId
-     * @param DocumentData data
-     * @param Array<any> read
-     * @param Array<any> write
-     * @param string parentDocument
-     * @param string parentProperty
-     * @param string parentPropertyType
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @param {string} documentId
+     * @param {object} data
+     * @param {string} read
+     * @param {string} write
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async createDocument(collectionId: string, data: DocumentData, read: Array<any> = [], write: Array<any> = [], parentDocument: string = '', parentProperty: string = '', parentPropertyType: string = 'assign'): Promise<string> {
-        let path = '/database/collections/{collectionId}/documents'.replace(new RegExp('{collectionId}', 'g'), collectionId);
-        
-        return await this.client.call('post', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'data': data,
-                'read': read,
-                'write': write,
-                'parentDocument': parentDocument,
-                'parentProperty': parentProperty,
-                'parentPropertyType': parentPropertyType
-            });
-    }
+    async createDocument(collectionId: string, documentId: string, data: object, read?: string, write?: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
 
+        if (typeof documentId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "documentId"');
+        }
+
+        if (typeof data === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "data"');
+        }
+
+        let path = '/database/collections/{collectionId}/documents'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof documentId !== 'undefined') {
+            payload['documentId'] = documentId;
+        }
+
+        if (typeof data !== 'undefined') {
+            payload['data'] = data;
+        }
+
+        if (typeof read !== 'undefined') {
+            payload['read'] = read;
+        }
+
+        if (typeof write !== 'undefined') {
+            payload['write'] = write;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get Document
      *
      * Get a document by its unique ID. This endpoint response returns a JSON
      * object with the document data.
      *
-     * @param string collectionId
-     * @param string documentId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @param {string} documentId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getDocument(collectionId: string, documentId: string): Promise<string> {
-        let path = '/database/collections/{collectionId}/documents/{documentId}'.replace(new RegExp('{collectionId}', 'g'), collectionId).replace(new RegExp('{documentId}', 'g'), documentId);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
-    }
+    async getDocument(collectionId: string, documentId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
 
+        if (typeof documentId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "documentId"');
+        }
+
+        let path = '/database/collections/{collectionId}/documents/{documentId}'.replace('{collectionId}', collectionId).replace('{documentId}', documentId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Update Document
      *
      * Update a document by its unique ID. Using the patch method you can pass
      * only specific fields that will get updated.
      *
-     * @param string collectionId
-     * @param string documentId
-     * @param DocumentData data
-     * @param Array<any> read
-     * @param Array<any> write
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @param {string} documentId
+     * @param {object} data
+     * @param {string} read
+     * @param {string} write
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async updateDocument(collectionId: string, documentId: string, data: DocumentData, read: Array<any> = [], write: Array<any> = []): Promise<string> {
-        let path = '/database/collections/{collectionId}/documents/{documentId}'.replace(new RegExp('{collectionId}', 'g'), collectionId).replace(new RegExp('{documentId}', 'g'), documentId);
-        
-        return await this.client.call('patch', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'data': data,
-                'read': read,
-                'write': write
-            });
-    }
+    async updateDocument(collectionId: string, documentId: string, data: object, read?: string, write?: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
 
+        if (typeof documentId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "documentId"');
+        }
+
+        if (typeof data === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "data"');
+        }
+
+        let path = '/database/collections/{collectionId}/documents/{documentId}'.replace('{collectionId}', collectionId).replace('{documentId}', documentId);
+        let payload: Payload = {};
+
+        if (typeof data !== 'undefined') {
+            payload['data'] = data;
+        }
+
+        if (typeof read !== 'undefined') {
+            payload['read'] = read;
+        }
+
+        if (typeof write !== 'undefined') {
+            payload['write'] = write;
+        }
+
+        return await this.client.call('patch', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Delete Document
      *
@@ -250,18 +902,143 @@ export class Database extends Service {
      * documents, its attributes and relations to other documents. Child documents
      * **will not** be deleted.
      *
-     * @param string collectionId
-     * @param string documentId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} collectionId
+     * @param {string} documentId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async deleteDocument(collectionId: string, documentId: string): Promise<string> {
-        let path = '/database/collections/{collectionId}/documents/{documentId}'.replace(new RegExp('{collectionId}', 'g'), collectionId).replace(new RegExp('{documentId}', 'g'), documentId);
-        
+    async deleteDocument(collectionId: string, documentId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof documentId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "documentId"');
+        }
+
+        let path = '/database/collections/{collectionId}/documents/{documentId}'.replace('{collectionId}', collectionId).replace('{documentId}', documentId);
+        let payload: Payload = {};
+
         return await this.client.call('delete', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * List Indexes
+     *
+     * @param {string} collectionId
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async listIndexes(collectionId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        let path = '/database/collections/{collectionId}/indexes'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Create Index
+     *
+     * @param {string} collectionId
+     * @param {string} indexId
+     * @param {string} type
+     * @param {string[]} attributes
+     * @param {string[]} orders
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async createIndex(collectionId: string, indexId: string, type: string, attributes: string[], orders?: string[]): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof indexId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "indexId"');
+        }
+
+        if (typeof type === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "type"');
+        }
+
+        if (typeof attributes === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "attributes"');
+        }
+
+        let path = '/database/collections/{collectionId}/indexes'.replace('{collectionId}', collectionId);
+        let payload: Payload = {};
+
+        if (typeof indexId !== 'undefined') {
+            payload['indexId'] = indexId;
+        }
+
+        if (typeof type !== 'undefined') {
+            payload['type'] = type;
+        }
+
+        if (typeof attributes !== 'undefined') {
+            payload['attributes'] = attributes;
+        }
+
+        if (typeof orders !== 'undefined') {
+            payload['orders'] = orders;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Get Index
+     *
+     * @param {string} collectionId
+     * @param {string} indexId
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async getIndex(collectionId: string, indexId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof indexId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "indexId"');
+        }
+
+        let path = '/database/collections/{collectionId}/indexes/{indexId}'.replace('{collectionId}', collectionId).replace('{indexId}', indexId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
+     * Delete Index
+     *
+     * @param {string} collectionId
+     * @param {string} indexId
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async deleteIndex(collectionId: string, indexId: string): Promise<Response> {
+        if (typeof collectionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "collectionId"');
+        }
+
+        if (typeof indexId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "indexId"');
+        }
+
+        let path = '/database/collections/{collectionId}/indexes/{indexId}'.replace('{collectionId}', collectionId).replace('{indexId}', indexId);
+        let payload: Payload = {};
+
+        return await this.client.call('delete', path, {
+            'content-type': 'application/json',
+        }, payload);
     }
 }

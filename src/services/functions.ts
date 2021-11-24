@@ -1,35 +1,56 @@
-import { Service } from "../service.ts";
-import { DocumentData } from '../client.ts'
+import { Service } from '../service.ts';
+import { Payload } from '../client.ts';
+import { AppwriteException } from '../exception.ts';
+import type { Models } from '../models.d.ts'
 
 export class Functions extends Service {
-
     /**
      * List Functions
      *
      * Get a list of all the project's functions. You can use the query params to
      * filter your results.
      *
-     * @param string search
-     * @param number limit
-     * @param number offset
-     * @param string orderType
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} search
+     * @param {number} limit
+     * @param {number} offset
+     * @param {string} cursor
+     * @param {string} cursorDirection
+     * @param {string} orderType
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async list(search: string = '', limit: number = 25, offset: number = 0, orderType: string = 'ASC'): Promise<string> {
+    async list(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Response> {
         let path = '/functions';
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'search': search,
-                'limit': limit,
-                'offset': offset,
-                'orderType': orderType
-            });
-    }
+        let payload: Payload = {};
 
+        if (typeof search !== 'undefined') {
+            payload['search'] = search;
+        }
+
+        if (typeof limit !== 'undefined') {
+            payload['limit'] = limit;
+        }
+
+        if (typeof offset !== 'undefined') {
+            payload['offset'] = offset;
+        }
+
+        if (typeof cursor !== 'undefined') {
+            payload['cursor'] = cursor;
+        }
+
+        if (typeof cursorDirection !== 'undefined') {
+            payload['cursorDirection'] = cursorDirection;
+        }
+
+        if (typeof orderType !== 'undefined') {
+            payload['orderType'] = orderType;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Create Function
      *
@@ -37,102 +58,174 @@ export class Functions extends Service {
      * [permissions](/docs/permissions) to allow different project users or team
      * with access to execute the function using the client API.
      *
-     * @param string name
-     * @param Array<any> execute
-     * @param string env
-     * @param DocumentData vars
-     * @param Array<any> events
-     * @param string schedule
-     * @param number timeout
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} name
+     * @param {string[]} execute
+     * @param {string} runtime
+     * @param {object} vars
+     * @param {string[]} events
+     * @param {string} schedule
+     * @param {number} timeout
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async create(name: string, execute: Array<any>, env: string, vars: DocumentData = {}, events: Array<any> = [], schedule: string = '', timeout: number = 15): Promise<string> {
-        let path = '/functions';
-        
-        return await this.client.call('post', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'name': name,
-                'execute': execute,
-                'env': env,
-                'vars': vars,
-                'events': events,
-                'schedule': schedule,
-                'timeout': timeout
-            });
-    }
+    async create(functionId: string, name: string, execute: string[], runtime: string, vars?: object, events?: string[], schedule?: string, timeout?: number): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        if (typeof name === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "name"');
+        }
+
+        if (typeof execute === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "execute"');
+        }
+
+        if (typeof runtime === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "runtime"');
+        }
+
+        let path = '/functions';
+        let payload: Payload = {};
+
+        if (typeof functionId !== 'undefined') {
+            payload['functionId'] = functionId;
+        }
+
+        if (typeof name !== 'undefined') {
+            payload['name'] = name;
+        }
+
+        if (typeof execute !== 'undefined') {
+            payload['execute'] = execute;
+        }
+
+        if (typeof runtime !== 'undefined') {
+            payload['runtime'] = runtime;
+        }
+
+        if (typeof vars !== 'undefined') {
+            payload['vars'] = vars;
+        }
+
+        if (typeof events !== 'undefined') {
+            payload['events'] = events;
+        }
+
+        if (typeof schedule !== 'undefined') {
+            payload['schedule'] = schedule;
+        }
+
+        if (typeof timeout !== 'undefined') {
+            payload['timeout'] = timeout;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get Function
      *
      * Get a function by its unique ID.
      *
-     * @param string functionId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async get(functionId: string): Promise<string> {
-        let path = '/functions/{functionId}'.replace(new RegExp('{functionId}', 'g'), functionId);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
-    }
+    async get(functionId: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        let path = '/functions/{functionId}'.replace('{functionId}', functionId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Update Function
      *
      * Update function by its unique ID.
      *
-     * @param string functionId
-     * @param string name
-     * @param Array<any> execute
-     * @param DocumentData vars
-     * @param Array<any> events
-     * @param string schedule
-     * @param number timeout
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} name
+     * @param {string[]} execute
+     * @param {object} vars
+     * @param {string[]} events
+     * @param {string} schedule
+     * @param {number} timeout
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async update(functionId: string, name: string, execute: Array<any>, vars: DocumentData = {}, events: Array<any> = [], schedule: string = '', timeout: number = 15): Promise<string> {
-        let path = '/functions/{functionId}'.replace(new RegExp('{functionId}', 'g'), functionId);
-        
-        return await this.client.call('put', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'name': name,
-                'execute': execute,
-                'vars': vars,
-                'events': events,
-                'schedule': schedule,
-                'timeout': timeout
-            });
-    }
+    async update(functionId: string, name: string, execute: string[], vars?: object, events?: string[], schedule?: string, timeout?: number): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        if (typeof name === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "name"');
+        }
+
+        if (typeof execute === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "execute"');
+        }
+
+        let path = '/functions/{functionId}'.replace('{functionId}', functionId);
+        let payload: Payload = {};
+
+        if (typeof name !== 'undefined') {
+            payload['name'] = name;
+        }
+
+        if (typeof execute !== 'undefined') {
+            payload['execute'] = execute;
+        }
+
+        if (typeof vars !== 'undefined') {
+            payload['vars'] = vars;
+        }
+
+        if (typeof events !== 'undefined') {
+            payload['events'] = events;
+        }
+
+        if (typeof schedule !== 'undefined') {
+            payload['schedule'] = schedule;
+        }
+
+        if (typeof timeout !== 'undefined') {
+            payload['timeout'] = timeout;
+        }
+
+        return await this.client.call('put', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Delete Function
      *
      * Delete a function by its unique ID.
      *
-     * @param string functionId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async delete(functionId: string): Promise<string> {
-        let path = '/functions/{functionId}'.replace(new RegExp('{functionId}', 'g'), functionId);
-        
-        return await this.client.call('delete', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
-    }
+    async delete(functionId: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        let path = '/functions/{functionId}'.replace('{functionId}', functionId);
+        let payload: Payload = {};
+
+        return await this.client.call('delete', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * List Executions
      *
@@ -141,28 +234,47 @@ export class Functions extends Service {
      * return a list of all of the project's executions. [Learn more about
      * different API modes](/docs/admin).
      *
-     * @param string functionId
-     * @param string search
-     * @param number limit
-     * @param number offset
-     * @param string orderType
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {number} limit
+     * @param {number} offset
+     * @param {string} search
+     * @param {string} cursor
+     * @param {string} cursorDirection
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async listExecutions(functionId: string, search: string = '', limit: number = 25, offset: number = 0, orderType: string = 'ASC'): Promise<string> {
-        let path = '/functions/{functionId}/executions'.replace(new RegExp('{functionId}', 'g'), functionId);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'search': search,
-                'limit': limit,
-                'offset': offset,
-                'orderType': orderType
-            });
-    }
+    async listExecutions(functionId: string, limit?: number, offset?: number, search?: string, cursor?: string, cursorDirection?: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        let path = '/functions/{functionId}/executions'.replace('{functionId}', functionId);
+        let payload: Payload = {};
+
+        if (typeof limit !== 'undefined') {
+            payload['limit'] = limit;
+        }
+
+        if (typeof offset !== 'undefined') {
+            payload['offset'] = offset;
+        }
+
+        if (typeof search !== 'undefined') {
+            payload['search'] = search;
+        }
+
+        if (typeof cursor !== 'undefined') {
+            payload['cursor'] = cursor;
+        }
+
+        if (typeof cursorDirection !== 'undefined') {
+            payload['cursorDirection'] = cursorDirection;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Create Execution
      *
@@ -171,42 +283,53 @@ export class Functions extends Service {
      * updates on the current execution status. Once this endpoint is called, your
      * function execution process will start asynchronously.
      *
-     * @param string functionId
-     * @param string data
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} data
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async createExecution(functionId: string, data: string = ''): Promise<string> {
-        let path = '/functions/{functionId}/executions'.replace(new RegExp('{functionId}', 'g'), functionId);
-        
-        return await this.client.call('post', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'data': data
-            });
-    }
+    async createExecution(functionId: string, data?: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        let path = '/functions/{functionId}/executions'.replace('{functionId}', functionId);
+        let payload: Payload = {};
+
+        if (typeof data !== 'undefined') {
+            payload['data'] = data;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Get Execution
      *
      * Get a function execution log by its unique ID.
      *
-     * @param string functionId
-     * @param string executionId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} executionId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getExecution(functionId: string, executionId: string): Promise<string> {
-        let path = '/functions/{functionId}/executions/{executionId}'.replace(new RegExp('{functionId}', 'g'), functionId).replace(new RegExp('{executionId}', 'g'), executionId);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
-    }
+    async getExecution(functionId: string, executionId: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        if (typeof executionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "executionId"');
+        }
+
+        let path = '/functions/{functionId}/executions/{executionId}'.replace('{functionId}', functionId).replace('{executionId}', executionId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Update Function Tag
      *
@@ -214,50 +337,83 @@ export class Functions extends Service {
      * endpoint to switch the code tag that should be executed by the execution
      * endpoint.
      *
-     * @param string functionId
-     * @param string tag
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} tag
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async updateTag(functionId: string, tag: string): Promise<string> {
-        let path = '/functions/{functionId}/tag'.replace(new RegExp('{functionId}', 'g'), functionId);
-        
-        return await this.client.call('patch', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'tag': tag
-            });
-    }
+    async updateTag(functionId: string, tag: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        if (typeof tag === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "tag"');
+        }
+
+        let path = '/functions/{functionId}/tag'.replace('{functionId}', functionId);
+        let payload: Payload = {};
+
+        if (typeof tag !== 'undefined') {
+            payload['tag'] = tag;
+        }
+
+        return await this.client.call('patch', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * List Tags
      *
      * Get a list of all the project's code tags. You can use the query params to
      * filter your results.
      *
-     * @param string functionId
-     * @param string search
-     * @param number limit
-     * @param number offset
-     * @param string orderType
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} search
+     * @param {number} limit
+     * @param {number} offset
+     * @param {string} cursor
+     * @param {string} cursorDirection
+     * @param {string} orderType
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async listTags(functionId: string, search: string = '', limit: number = 25, offset: number = 0, orderType: string = 'ASC'): Promise<string> {
-        let path = '/functions/{functionId}/tags'.replace(new RegExp('{functionId}', 'g'), functionId);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-                'search': search,
-                'limit': limit,
-                'offset': offset,
-                'orderType': orderType
-            });
-    }
+    async listTags(functionId: string, search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        let path = '/functions/{functionId}/tags'.replace('{functionId}', functionId);
+        let payload: Payload = {};
+
+        if (typeof search !== 'undefined') {
+            payload['search'] = search;
+        }
+
+        if (typeof limit !== 'undefined') {
+            payload['limit'] = limit;
+        }
+
+        if (typeof offset !== 'undefined') {
+            payload['offset'] = offset;
+        }
+
+        if (typeof cursor !== 'undefined') {
+            payload['cursor'] = cursor;
+        }
+
+        if (typeof cursorDirection !== 'undefined') {
+            payload['cursorDirection'] = cursorDirection;
+        }
+
+        if (typeof orderType !== 'undefined') {
+            payload['orderType'] = orderType;
+        }
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Create Tag
      *
@@ -272,61 +428,90 @@ export class Functions extends Service {
      * 
      * Use the "command" param to set the entry point used to execute your code.
      *
-     * @param string functionId
-     * @param string command
-     * @param File | Blob code
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} command
+     * @param {File | Blob} code
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async createTag(functionId: string, command: string, code: File | Blob): Promise<string> {
-        let path = '/functions/{functionId}/tags'.replace(new RegExp('{functionId}', 'g'), functionId);
-        
-        return await this.client.call('post', path, {
-                    'content-type': 'multipart/form-data',
-               },
-               {
-                'command': command,
-                'code': code
-            });
-    }
+    async createTag(functionId: string, command: string, code: File | Blob): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        if (typeof command === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "command"');
+        }
+
+        if (typeof code === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "code"');
+        }
+
+        let path = '/functions/{functionId}/tags'.replace('{functionId}', functionId);
+        let payload: Payload = {};
+
+        if (typeof command !== 'undefined') {
+            payload['command'] = command;
+        }
+
+        if (typeof code !== 'undefined') {
+            payload['code'] = code;
+        }
+
+        return await this.client.call('post', path, {
+            'content-type': 'multipart/form-data',
+        }, payload);
+    }
     /**
      * Get Tag
      *
      * Get a code tag by its unique ID.
      *
-     * @param string functionId
-     * @param string tagId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} tagId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async getTag(functionId: string, tagId: string): Promise<string> {
-        let path = '/functions/{functionId}/tags/{tagId}'.replace(new RegExp('{functionId}', 'g'), functionId).replace(new RegExp('{tagId}', 'g'), tagId);
-        
-        return await this.client.call('get', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
-    }
+    async getTag(functionId: string, tagId: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
 
+        if (typeof tagId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "tagId"');
+        }
+
+        let path = '/functions/{functionId}/tags/{tagId}'.replace('{functionId}', functionId).replace('{tagId}', tagId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
     /**
      * Delete Tag
      *
      * Delete a code tag by its unique ID.
      *
-     * @param string functionId
-     * @param string tagId
-     * @throws Exception
-     * @return Promise<string>
+     * @param {string} functionId
+     * @param {string} tagId
+     * @throws {AppwriteException}
+     * @returns {Promise}
      */
-    async deleteTag(functionId: string, tagId: string): Promise<string> {
-        let path = '/functions/{functionId}/tags/{tagId}'.replace(new RegExp('{functionId}', 'g'), functionId).replace(new RegExp('{tagId}', 'g'), tagId);
-        
+    async deleteTag(functionId: string, tagId: string): Promise<Response> {
+        if (typeof functionId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "functionId"');
+        }
+
+        if (typeof tagId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "tagId"');
+        }
+
+        let path = '/functions/{functionId}/tags/{tagId}'.replace('{functionId}', functionId).replace('{tagId}', tagId);
+        let payload: Payload = {};
+
         return await this.client.call('delete', path, {
-                    'content-type': 'application/json',
-               },
-               {
-            });
+            'content-type': 'application/json',
+        }, payload);
     }
 }
