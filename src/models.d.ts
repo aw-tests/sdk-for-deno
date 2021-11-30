@@ -289,7 +289,7 @@ export namespace Models {
         /**
          * Is attribute an array?
          */
-        array: boolean;
+        array?: boolean;
         /**
          * Attribute size.
          */
@@ -297,7 +297,7 @@ export namespace Models {
         /**
          * Default value for attribute when not provided. Cannot be set when attribute is required.
          */
-        xdefault: string;
+        xdefault?: string;
     }
     /**
      * AttributeInteger
@@ -322,19 +322,19 @@ export namespace Models {
         /**
          * Is attribute an array?
          */
-        array: boolean;
+        array?: boolean;
         /**
          * Minimum value to enforce for new documents.
          */
-        min: number;
+        min?: number;
         /**
          * Maximum value to enforce for new documents.
          */
-        max: number;
+        max?: number;
         /**
          * Default value for attribute when not provided. Cannot be set when attribute is required.
          */
-        xdefault: number;
+        xdefault?: number;
     }
     /**
      * AttributeFloat
@@ -359,19 +359,19 @@ export namespace Models {
         /**
          * Is attribute an array?
          */
-        array: boolean;
+        array?: boolean;
         /**
          * Minimum value to enforce for new documents.
          */
-        min: number;
+        min?: number;
         /**
          * Maximum value to enforce for new documents.
          */
-        max: number;
+        max?: number;
         /**
          * Default value for attribute when not provided. Cannot be set when attribute is required.
          */
-        xdefault: number;
+        xdefault?: number;
     }
     /**
      * AttributeBoolean
@@ -396,11 +396,11 @@ export namespace Models {
         /**
          * Is attribute an array?
          */
-        array: boolean;
+        array?: boolean;
         /**
          * Default value for attribute when not provided. Cannot be set when attribute is required.
          */
-        xdefault: boolean;
+        xdefault?: boolean;
     }
     /**
      * AttributeEmail
@@ -425,7 +425,7 @@ export namespace Models {
         /**
          * Is attribute an array?
          */
-        array: boolean;
+        array?: boolean;
         /**
          * String format.
          */
@@ -433,7 +433,7 @@ export namespace Models {
         /**
          * Default value for attribute when not provided. Cannot be set when attribute is required.
          */
-        xdefault: string;
+        xdefault?: string;
     }
     /**
      * AttributeEnum
@@ -458,7 +458,7 @@ export namespace Models {
         /**
          * Is attribute an array?
          */
-        array: boolean;
+        array?: boolean;
         /**
          * Array of elements in enumerated type.
          */
@@ -470,7 +470,7 @@ export namespace Models {
         /**
          * Default value for attribute when not provided. Cannot be set when attribute is required.
          */
-        xdefault: string;
+        xdefault?: string;
     }
     /**
      * AttributeIP
@@ -495,7 +495,7 @@ export namespace Models {
         /**
          * Is attribute an array?
          */
-        array: boolean;
+        array?: boolean;
         /**
          * String format.
          */
@@ -503,7 +503,7 @@ export namespace Models {
         /**
          * Default value for attribute when not provided. Cannot be set when attribute is required.
          */
-        xdefault: string;
+        xdefault?: string;
     }
     /**
      * AttributeURL
@@ -528,7 +528,7 @@ export namespace Models {
         /**
          * Is attribute an array?
          */
-        array: boolean;
+        array?: boolean;
         /**
          * String format.
          */
@@ -536,7 +536,7 @@ export namespace Models {
         /**
          * Default value for attribute when not provided. Cannot be set when attribute is required.
          */
-        xdefault: string;
+        xdefault?: string;
     }
     /**
      * Index
