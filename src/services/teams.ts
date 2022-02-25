@@ -1,5 +1,6 @@
+import { basename } from "https://deno.land/std@0.122.0/path/mod.ts";
 import { Service } from '../service.ts';
-import { Payload } from '../client.ts';
+import { Payload, Client } from '../client.ts';
 import { AppwriteException } from '../exception.ts';
 import type { Models } from '../models.d.ts'
 
@@ -7,19 +8,22 @@ export class Teams extends Service {
     /**
      * List Teams
      *
-     * Get a list of all the current user teams. You can use the query params to
-     * filter your results. On admin mode, this endpoint will return a list of all
-     * of the project's teams. [Learn more about different API
-     * modes](/docs/admin).
+     * Get a list of all the teams in which the current user is a member. You can
+     * use the parameters to filter your results.
+     * 
+     * In admin mode, this endpoint returns a list of all the teams in the current
+     * project. [Learn more about different API modes](/docs/admin).
      *
      * @param {string} search
      * @param {number} limit
      * @param {number} offset
+     * @param {string} cursor
+     * @param {string} cursorDirection
      * @param {string} orderType
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async list(search?: string, limit?: number, offset?: number, orderType?: string): Promise<Models.TeamList> {
+    async list(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Models.TeamList> {
         let path = '/teams';
         let payload: Payload = {};
 
@@ -35,6 +39,14 @@ export class Teams extends Service {
             payload['offset'] = offset;
         }
 
+        if (typeof cursor !== 'undefined') {
+            payload['cursor'] = cursor;
+        }
+
+        if (typeof cursorDirection !== 'undefined') {
+            payload['cursorDirection'] = cursorDirection;
+        }
+
         if (typeof orderType !== 'undefined') {
             payload['orderType'] = orderType;
         }
@@ -47,16 +59,20 @@ export class Teams extends Service {
      * Create Team
      *
      * Create a new team. The user who creates the team will automatically be
-     * assigned as the owner of the team. The team owner can invite new members,
-     * who will be able add new owners and update or delete the team from your
-     * project.
+     * assigned as the owner of the team. Only the users with the owner role can
+     * invite new members, add new owners and delete or update the team.
      *
+     * @param {string} teamId
      * @param {string} name
      * @param {string[]} roles
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async create(name: string, roles?: string[]): Promise<Models.Team> {
+    async create(teamId: string, name: string, roles?: string[]): Promise<Models.Team> {
+        if (typeof teamId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "teamId"');
+        }
+
         if (typeof name === 'undefined') {
             throw new AppwriteException('Missing required parameter: "name"');
         }
@@ -64,14 +80,15 @@ export class Teams extends Service {
         let path = '/teams';
         let payload: Payload = {};
 
+        if (typeof teamId !== 'undefined') {
+            payload['teamId'] = teamId;
+        }
         if (typeof name !== 'undefined') {
             payload['name'] = name;
         }
-
         if (typeof roles !== 'undefined') {
             payload['roles'] = roles;
         }
-
         return await this.client.call('post', path, {
             'content-type': 'application/json',
         }, payload);
@@ -79,8 +96,7 @@ export class Teams extends Service {
     /**
      * Get Team
      *
-     * Get a team by its unique ID. All team members have read access for this
-     * resource.
+     * Get a team by its ID. All team members have read access for this resource.
      *
      * @param {string} teamId
      * @throws {AppwriteException}
@@ -101,8 +117,8 @@ export class Teams extends Service {
     /**
      * Update Team
      *
-     * Update a team by its unique ID. Only team owners have write access for this
-     * resource.
+     * Update a team using its ID. Only members with the owner role can update the
+     * team.
      *
      * @param {string} teamId
      * @param {string} name
@@ -124,7 +140,6 @@ export class Teams extends Service {
         if (typeof name !== 'undefined') {
             payload['name'] = name;
         }
-
         return await this.client.call('put', path, {
             'content-type': 'application/json',
         }, payload);
@@ -132,8 +147,8 @@ export class Teams extends Service {
     /**
      * Delete Team
      *
-     * Delete a team by its unique ID. Only team owners have write access for this
-     * resource.
+     * Delete a team using its ID. Only team members with the owner role can
+     * delete the team.
      *
      * @param {string} teamId
      * @throws {AppwriteException}
@@ -154,18 +169,20 @@ export class Teams extends Service {
     /**
      * Get Team Memberships
      *
-     * Get a team members by the team unique ID. All team members have read access
-     * for this list of resources.
+     * Use this endpoint to list a team's members using the team's ID. All team
+     * members have read access to this endpoint.
      *
      * @param {string} teamId
      * @param {string} search
      * @param {number} limit
      * @param {number} offset
+     * @param {string} cursor
+     * @param {string} cursorDirection
      * @param {string} orderType
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getMemberships(teamId: string, search?: string, limit?: number, offset?: number, orderType?: string): Promise<Models.MembershipList> {
+    async getMemberships(teamId: string, search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Models.MembershipList> {
         if (typeof teamId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "teamId"');
         }
@@ -185,6 +202,14 @@ export class Teams extends Service {
             payload['offset'] = offset;
         }
 
+        if (typeof cursor !== 'undefined') {
+            payload['cursor'] = cursor;
+        }
+
+        if (typeof cursorDirection !== 'undefined') {
+            payload['cursorDirection'] = cursorDirection;
+        }
+
         if (typeof orderType !== 'undefined') {
             payload['orderType'] = orderType;
         }
@@ -196,22 +221,21 @@ export class Teams extends Service {
     /**
      * Create Team Membership
      *
-     * Use this endpoint to invite a new member to join your team. If initiated
-     * from Client SDK, an email with a link to join the team will be sent to the
-     * new member's email address if the member doesn't exist in the project it
-     * will be created automatically. If initiated from server side SDKs, new
-     * member will automatically be added to the team.
+     * Invite a new member to join your team. If initiated from the client SDK, an
+     * email with a link to join the team will be sent to the member's email
+     * address and an account will be created for them should they not be signed
+     * up already. If initiated from server-side SDKs, the new member will
+     * automatically be added to the team.
      * 
-     * Use the 'URL' parameter to redirect the user from the invitation email back
+     * Use the 'url' parameter to redirect the user from the invitation email back
      * to your app. When the user is redirected, use the [Update Team Membership
      * Status](/docs/client/teams#teamsUpdateMembershipStatus) endpoint to allow
-     * the user to accept the invitation to the team.  While calling from side
-     * SDKs the redirect url can be empty string.
+     * the user to accept the invitation to the team. 
      * 
-     * Please note that in order to avoid a [Redirect
-     * Attacks](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.md)
+     * Please note that to avoid a [Redirect
+     * Attack](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.md)
      * the only valid redirect URL's are the once from domains you have set when
-     * added your platforms in the console interface.
+     * adding your platforms in the console interface.
      *
      * @param {string} teamId
      * @param {string} email
@@ -244,25 +268,52 @@ export class Teams extends Service {
         if (typeof email !== 'undefined') {
             payload['email'] = email;
         }
-
         if (typeof roles !== 'undefined') {
             payload['roles'] = roles;
         }
-
         if (typeof url !== 'undefined') {
             payload['url'] = url;
         }
-
         if (typeof name !== 'undefined') {
             payload['name'] = name;
         }
-
         return await this.client.call('post', path, {
             'content-type': 'application/json',
         }, payload);
     }
     /**
+     * Get Team Membership
+     *
+     * Get a team member by the membership unique id. All team members have read
+     * access for this resource.
+     *
+     * @param {string} teamId
+     * @param {string} membershipId
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async getMembership(teamId: string, membershipId: string): Promise<Models.MembershipList> {
+        if (typeof teamId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "teamId"');
+        }
+
+        if (typeof membershipId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "membershipId"');
+        }
+
+        let path = '/teams/{teamId}/memberships/{membershipId}'.replace('{teamId}', teamId).replace('{membershipId}', membershipId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
      * Update Membership Roles
+     *
+     * Modify the roles of a team member. Only team members with the owner role
+     * have access to this endpoint. Learn more about [roles and
+     * permissions](/docs/permissions).
      *
      * @param {string} teamId
      * @param {string} membershipId
@@ -289,7 +340,6 @@ export class Teams extends Service {
         if (typeof roles !== 'undefined') {
             payload['roles'] = roles;
         }
-
         return await this.client.call('patch', path, {
             'content-type': 'application/json',
         }, payload);
@@ -326,8 +376,12 @@ export class Teams extends Service {
      * Update Team Membership Status
      *
      * Use this endpoint to allow a user to accept an invitation to join a team
-     * after being redirected back to your app from the invitation email recieved
+     * after being redirected back to your app from the invitation email received
      * by the user.
+     * 
+     * If the request is successful, a session for the user is automatically
+     * created.
+     * 
      *
      * @param {string} teamId
      * @param {string} membershipId
@@ -359,11 +413,9 @@ export class Teams extends Service {
         if (typeof userId !== 'undefined') {
             payload['userId'] = userId;
         }
-
         if (typeof secret !== 'undefined') {
             payload['secret'] = secret;
         }
-
         return await this.client.call('patch', path, {
             'content-type': 'application/json',
         }, payload);

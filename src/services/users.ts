@@ -1,5 +1,6 @@
+import { basename } from "https://deno.land/std@0.122.0/path/mod.ts";
 import { Service } from '../service.ts';
-import { Payload } from '../client.ts';
+import { Payload, Client } from '../client.ts';
 import { AppwriteException } from '../exception.ts';
 import type { Models } from '../models.d.ts'
 
@@ -13,11 +14,13 @@ export class Users extends Service {
      * @param {string} search
      * @param {number} limit
      * @param {number} offset
+     * @param {string} cursor
+     * @param {string} cursorDirection
      * @param {string} orderType
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async list<Preferences extends Models.Preferences>(search?: string, limit?: number, offset?: number, orderType?: string): Promise<Models.UserList<Preferences>> {
+    async list<Preferences extends Models.Preferences>(search?: string, limit?: number, offset?: number, cursor?: string, cursorDirection?: string, orderType?: string): Promise<Models.UserList<Preferences>> {
         let path = '/users';
         let payload: Payload = {};
 
@@ -33,6 +36,14 @@ export class Users extends Service {
             payload['offset'] = offset;
         }
 
+        if (typeof cursor !== 'undefined') {
+            payload['cursor'] = cursor;
+        }
+
+        if (typeof cursorDirection !== 'undefined') {
+            payload['cursorDirection'] = cursorDirection;
+        }
+
         if (typeof orderType !== 'undefined') {
             payload['orderType'] = orderType;
         }
@@ -46,13 +57,18 @@ export class Users extends Service {
      *
      * Create a new user.
      *
+     * @param {string} userId
      * @param {string} email
      * @param {string} password
      * @param {string} name
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async create<Preferences extends Models.Preferences>(email: string, password: string, name?: string): Promise<Models.User<Preferences>> {
+    async create<Preferences extends Models.Preferences>(userId: string, email: string, password: string, name?: string): Promise<Models.User<Preferences>> {
+        if (typeof userId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "userId"');
+        }
+
         if (typeof email === 'undefined') {
             throw new AppwriteException('Missing required parameter: "email"');
         }
@@ -64,18 +80,18 @@ export class Users extends Service {
         let path = '/users';
         let payload: Payload = {};
 
+        if (typeof userId !== 'undefined') {
+            payload['userId'] = userId;
+        }
         if (typeof email !== 'undefined') {
             payload['email'] = email;
         }
-
         if (typeof password !== 'undefined') {
             payload['password'] = password;
         }
-
         if (typeof name !== 'undefined') {
             payload['name'] = name;
         }
-
         return await this.client.call('post', path, {
             'content-type': 'application/json',
         }, payload);
@@ -147,7 +163,6 @@ export class Users extends Service {
         if (typeof email !== 'undefined') {
             payload['email'] = email;
         }
-
         return await this.client.call('patch', path, {
             'content-type': 'application/json',
         }, payload);
@@ -155,19 +170,29 @@ export class Users extends Service {
     /**
      * Get User Logs
      *
-     * Get a user activity logs list by its unique ID.
+     * Get the user activity logs list by its unique ID.
      *
      * @param {string} userId
+     * @param {number} limit
+     * @param {number} offset
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getLogs(userId: string): Promise<Models.LogList> {
+    async getLogs(userId: string, limit?: number, offset?: number): Promise<Models.LogList> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
 
         let path = '/users/{userId}/logs'.replace('{userId}', userId);
         let payload: Payload = {};
+
+        if (typeof limit !== 'undefined') {
+            payload['limit'] = limit;
+        }
+
+        if (typeof offset !== 'undefined') {
+            payload['offset'] = offset;
+        }
 
         return await this.client.call('get', path, {
             'content-type': 'application/json',
@@ -198,7 +223,6 @@ export class Users extends Service {
         if (typeof name !== 'undefined') {
             payload['name'] = name;
         }
-
         return await this.client.call('patch', path, {
             'content-type': 'application/json',
         }, payload);
@@ -228,7 +252,6 @@ export class Users extends Service {
         if (typeof password !== 'undefined') {
             payload['password'] = password;
         }
-
         return await this.client.call('patch', path, {
             'content-type': 'application/json',
         }, payload);
@@ -257,8 +280,9 @@ export class Users extends Service {
     /**
      * Update User Preferences
      *
-     * Update the user preferences by its unique ID. You can pass only the
-     * specific settings you wish to update.
+     * Update the user preferences by its unique ID. The object you pass is stored
+     * as is, and replaces any previous value. The maximum allowed prefs size is
+     * 64kB and throws error if exceeded.
      *
      * @param {string} userId
      * @param {object} prefs
@@ -280,7 +304,6 @@ export class Users extends Service {
         if (typeof prefs !== 'undefined') {
             payload['prefs'] = prefs;
         }
-
         return await this.client.call('patch', path, {
             'content-type': 'application/json',
         }, payload);
@@ -359,11 +382,11 @@ export class Users extends Service {
      * Update the user status by its unique ID.
      *
      * @param {string} userId
-     * @param {number} status
+     * @param {boolean} status
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateStatus<Preferences extends Models.Preferences>(userId: string, status: number): Promise<Models.User<Preferences>> {
+    async updateStatus<Preferences extends Models.Preferences>(userId: string, status: boolean): Promise<Models.User<Preferences>> {
         if (typeof userId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "userId"');
         }
@@ -378,7 +401,6 @@ export class Users extends Service {
         if (typeof status !== 'undefined') {
             payload['status'] = status;
         }
-
         return await this.client.call('patch', path, {
             'content-type': 'application/json',
         }, payload);
@@ -408,7 +430,6 @@ export class Users extends Service {
         if (typeof emailVerification !== 'undefined') {
             payload['emailVerification'] = emailVerification;
         }
-
         return await this.client.call('patch', path, {
             'content-type': 'application/json',
         }, payload);

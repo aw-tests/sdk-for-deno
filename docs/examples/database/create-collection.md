@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = database.createCollection('[NAME]', [], [], []);
+let promise = database.createCollection('[COLLECTION_ID]', '[NAME]', 'document', ["role:all"], ["role:all"]);
 
 promise.then(function (response) {
     console.log(response);
