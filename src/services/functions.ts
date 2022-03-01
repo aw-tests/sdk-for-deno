@@ -2,7 +2,15 @@ import { basename } from "https://deno.land/std@0.122.0/path/mod.ts";
 import { Service } from '../service.ts';
 import { Payload, Client } from '../client.ts';
 import { AppwriteException } from '../exception.ts';
-import type { Models } from '../models.d.ts'
+import type { Models } from '../models.d.ts';
+
+export type UploadProgress = {
+    $id: string;
+    progress: number;
+    sizeUploaded: number;
+    chunksTotal: number;
+    chunksUploaded: number;
+}
 
 export class Functions extends Service {
     /**
@@ -302,7 +310,7 @@ export class Functions extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createDeployment(functionId: string, entrypoint: string, code: string, activate: boolean, onProgress = (progress: number) => {}): Promise<Models.Deployment> {
+    async createDeployment(functionId: string, entrypoint: string, code: string, activate: boolean, onProgress = (progress: UploadProgress) => {}): Promise<Models.Deployment> {
         if (typeof functionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "functionId"');
         }
@@ -384,7 +392,13 @@ export class Functions extends Service {
                     }
 
                     if (onProgress !== null) {
-                            onProgress(Math.min((counter+1) * Client.CHUNK_SIZE, size) / size * 100);
+                        onProgress({
+                            $id: response['$id'],
+                            progress: Math.min((counter+1) * Client.CHUNK_SIZE, size) / size * 100,
+                            sizeUploaded: end+1,
+                            chunksTotal: response['chunksTotal'],
+                            chunksUploaded: response['chunksUploaded']
+                        });
                     }
             }
 

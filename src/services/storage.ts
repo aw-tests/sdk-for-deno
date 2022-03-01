@@ -2,7 +2,15 @@ import { basename } from "https://deno.land/std@0.122.0/path/mod.ts";
 import { Service } from '../service.ts';
 import { Payload, Client } from '../client.ts';
 import { AppwriteException } from '../exception.ts';
-import type { Models } from '../models.d.ts'
+import type { Models } from '../models.d.ts';
+
+export type UploadProgress = {
+    $id: string;
+    progress: number;
+    sizeUploaded: number;
+    chunksTotal: number;
+    chunksUploaded: number;
+}
 
 export class Storage extends Service {
     /**
@@ -311,7 +319,7 @@ export class Storage extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async createFile(bucketId: string, fileId: string, file: string, read?: string[], write?: string[], onProgress = (progress: number) => {}): Promise<Models.File> {
+    async createFile(bucketId: string, fileId: string, file: string, read?: string[], write?: string[], onProgress = (progress: UploadProgress) => {}): Promise<Models.File> {
         if (typeof bucketId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "bucketId"');
         }
@@ -392,7 +400,13 @@ export class Storage extends Service {
                     }
 
                     if (onProgress !== null) {
-                            onProgress(Math.min((counter+1) * Client.CHUNK_SIZE, size) / size * 100);
+                        onProgress({
+                            $id: response['$id'],
+                            progress: Math.min((counter+1) * Client.CHUNK_SIZE, size) / size * 100,
+                            sizeUploaded: end+1,
+                            chunksTotal: response['chunksTotal'],
+                            chunksUploaded: response['chunksUploaded']
+                        });
                     }
             }
 
