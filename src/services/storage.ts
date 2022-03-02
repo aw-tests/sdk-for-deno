@@ -339,7 +339,7 @@ export class Storage extends Service {
             payload['fileId'] = fileId;
         }
         if (typeof file !== 'undefined') {
-            payload['file'] = file;
+            payload['file'] = file.toString();
         }
         if (typeof read !== 'undefined') {
             payload['read'] = read;

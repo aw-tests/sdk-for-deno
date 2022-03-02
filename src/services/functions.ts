@@ -334,10 +334,10 @@ export class Functions extends Service {
             payload['entrypoint'] = entrypoint;
         }
         if (typeof code !== 'undefined') {
-            payload['code'] = code;
+            payload['code'] = code.toString();
         }
         if (typeof activate !== 'undefined') {
-            payload['activate'] = activate;
+            payload['activate'] = activate.toString();
         }
         const {size: size} = await Deno.stat(code);
 

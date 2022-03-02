@@ -12,7 +12,7 @@ export class Client {
     headers: Payload = {
         'content-type': '',
         'x-sdk-version': 'appwrite:deno:2.0.2',
-        'X-Appwrite-Response-Format':'0.12.0',
+        'X-Appwrite-Response-Format':'0.13.0',
     };
 
     /**
@@ -103,7 +103,7 @@ export class Client {
     }
 
     async call(method: string, path: string = '', headers: Payload = {}, params: Payload = {}) {
-        headers = { ...this.headers, ...headers };
+        headers = Object.assign({}, this.headers, headers);
 
         let body;
         const url = new URL(this.endpoint + path);
