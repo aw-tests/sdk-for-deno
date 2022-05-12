@@ -207,6 +207,27 @@ export class Users extends Service {
         }, payload);
     }
     /**
+     * Get User Memberships
+     *
+     * Get the user membership list by its unique ID.
+     *
+     * @param {string} userId
+     * @throws {AppwriteException}
+     * @returns {Promise}
+     */
+    async getMemberships(userId: string): Promise<Models.MembershipList> {
+        if (typeof userId === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "userId"');
+        }
+
+        let path = '/users/{userId}/memberships'.replace('{userId}', userId);
+        let payload: Payload = {};
+
+        return await this.client.call('get', path, {
+            'content-type': 'application/json',
+        }, payload);
+    }
+    /**
      * Update Name
      *
      * Update the user name by its unique ID.
