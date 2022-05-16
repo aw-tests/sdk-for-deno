@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = account.delete();
+let promise = account.updateStatus();
 
 promise.then(function (response) {
     console.log(response);
