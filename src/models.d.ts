@@ -255,6 +255,14 @@ export namespace Models {
          */
         $id: string;
         /**
+         * Collection creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * Collection update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * Collection read permissions.
          */
         $read: string[];
@@ -277,7 +285,7 @@ export namespace Models {
         /**
          * Collection attributes.
          */
-        attributes: string[];
+        attributes: (AttributeBoolean | AttributeInteger | AttributeFloat | AttributeEmail | AttributeEnum | AttributeUrl | AttributeIp | AttributeString)[];
         /**
          * Collection indexes.
          */
@@ -294,7 +302,7 @@ export namespace Models {
         /**
          * List of attributes.
          */
-        attributes: string[];
+        attributes: (AttributeBoolean | AttributeInteger | AttributeFloat | AttributeEmail | AttributeEnum | AttributeUrl | AttributeIp | AttributeString)[];
     }
     /**
      * AttributeString
@@ -606,6 +614,14 @@ export namespace Models {
          */
         $collection: string;
         /**
+         * Document creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * Document update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * Document read permissions.
          */
         $read: string[];
@@ -712,6 +728,14 @@ export namespace Models {
          */
         $id: string;
         /**
+         * User creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * User update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * User name.
          */
         name: string;
@@ -732,9 +756,17 @@ export namespace Models {
          */
         email: string;
         /**
+         * User phone number in E.164 format.
+         */
+        phone: string;
+        /**
          * Email verification status.
          */
         emailVerification: boolean;
+        /**
+         * Phone verification status.
+         */
+        phoneVerification: boolean;
         /**
          * User preferences as a key-value object
          */
@@ -753,6 +785,10 @@ export namespace Models {
          * Session ID.
          */
         $id: string;
+        /**
+         * Session creation date in Unix timestamp.
+         */
+        $createdAt: number;
         /**
          * User ID.
          */
@@ -855,6 +891,10 @@ export namespace Models {
          */
         $id: string;
         /**
+         * Token creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
          * User ID.
          */
         userId: string;
@@ -913,6 +953,14 @@ export namespace Models {
          */
         bucketId: string;
         /**
+         * File creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * File update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * File read permissions.
          */
         $read: string[];
@@ -924,10 +972,6 @@ export namespace Models {
          * File name.
          */
         name: string;
-        /**
-         * File creation date in Unix timestamp.
-         */
-        dateCreated: number;
         /**
          * File MD5 signature.
          */
@@ -958,6 +1002,14 @@ export namespace Models {
          */
         $id: string;
         /**
+         * Bucket creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * Bucket update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * File read permissions.
          */
         $read: string[];
@@ -969,14 +1021,6 @@ export namespace Models {
          * Bucket permission model. Possible values: `bucket` or `file`
          */
         permission: string;
-        /**
-         * Bucket creation date in Unix timestamp.
-         */
-        dateCreated: number;
-        /**
-         * Bucket update date in Unix timestamp.
-         */
-        dateUpdated: number;
         /**
          * Bucket name.
          */
@@ -1011,13 +1055,17 @@ export namespace Models {
          */
         $id: string;
         /**
+         * Team creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * Team update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * Team name.
          */
         name: string;
-        /**
-         * Team creation date in Unix timestamp.
-         */
-        dateCreated: number;
         /**
          * Total number of team members.
          */
@@ -1031,6 +1079,14 @@ export namespace Models {
          * Membership ID.
          */
         $id: string;
+        /**
+         * Membership creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * Membership update date in Unix timestamp.
+         */
+        $updatedAt: number;
         /**
          * User ID.
          */
@@ -1077,6 +1133,14 @@ export namespace Models {
          */
         $id: string;
         /**
+         * Function creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * Function update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * Execution permissions.
          */
         execute: string[];
@@ -1084,14 +1148,6 @@ export namespace Models {
          * Function name.
          */
         name: string;
-        /**
-         * Function creation date in Unix timestamp.
-         */
-        dateCreated: number;
-        /**
-         * Function update date in Unix timestamp.
-         */
-        dateUpdated: number;
         /**
          * Function status. Possible values: `disabled`, `enabled`
          */
@@ -1171,6 +1227,14 @@ export namespace Models {
          */
         $id: string;
         /**
+         * Deployment creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * Deployment update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * Resource ID.
          */
         resourceId: string;
@@ -1178,10 +1242,6 @@ export namespace Models {
          * Resource type.
          */
         resourceType: string;
-        /**
-         * The deployment creation date in Unix timestamp.
-         */
-        dateCreated: number;
         /**
          * The entrypoint file to use to execute the deployment code.
          */
@@ -1220,6 +1280,14 @@ export namespace Models {
          */
         $id: string;
         /**
+         * Execution creation date in Unix timestamp.
+         */
+        $createdAt: number;
+        /**
+         * Execution update date in Unix timestamp.
+         */
+        $updatedAt: number;
+        /**
          * Execution read permissions.
          */
         $read: string[];
@@ -1227,10 +1295,6 @@ export namespace Models {
          * Function ID.
          */
         functionId: string;
-        /**
-         * The execution creation date in Unix timestamp.
-         */
-        dateCreated: number;
         /**
          * The trigger that caused the function to execute. Possible values can be: `http`, `schedule`, or `event`.
          */
