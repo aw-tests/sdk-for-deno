@@ -247,6 +247,19 @@ export namespace Models {
         phones: Phone[];
     }
     /**
+     * Database
+     */
+    export type Database = { 
+        /**
+         * Database ID.
+         */
+        $id: string;
+        /**
+         * Database name.
+         */
+        name: string;
+    }
+    /**
      * Collection
      */
     export type Collection = { 
@@ -270,6 +283,10 @@ export namespace Models {
          * Collection write permissions.
          */
         $write: string[];
+        /**
+         * Database ID.
+         */
+        databaseId: string;
         /**
          * Collection name.
          */
