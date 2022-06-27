@@ -26,6 +26,19 @@ export namespace Models {
         collections: Collection[];
     }
     /**
+     * Databases List
+     */
+    export type DatabaseList = { 
+        /**
+         * Total number of databases documents that matched your query.
+         */
+        total: number;
+        /**
+         * List of databases.
+         */
+        databases: Database[];
+    }
+    /**
      * Indexes List
      */
     export type IndexList = { 
