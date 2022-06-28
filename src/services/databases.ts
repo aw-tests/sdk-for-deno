@@ -75,16 +75,11 @@ export class Databases extends Service {
     /**
      * Create Database
      *
-     * @param {string} databaseId
      * @param {string} name
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async create(databaseId: string, name: string): Promise<Models.Database> {
-        if (typeof databaseId === 'undefined') {
-            throw new AppwriteException('Missing required parameter: "databaseId"');
-        }
-
+    async create(name: string): Promise<Models.Database> {
         if (typeof name === 'undefined') {
             throw new AppwriteException('Missing required parameter: "name"');
         }
@@ -92,8 +87,8 @@ export class Databases extends Service {
         let path = '/databases';
         let payload: Payload = {};
 
-        if (typeof databaseId !== 'undefined') {
-            payload['databaseId'] = databaseId;
+        if (typeof this.databaseId !== 'undefined') {
+            payload['databaseId'] = this.databaseId;
         }
         if (typeof name !== 'undefined') {
             payload['name'] = name;
