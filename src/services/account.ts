@@ -14,6 +14,12 @@ export type UploadProgress = {
 }
 
 export class Account extends Service {
+
+     constructor(client: Client)
+     {
+        super(client);
+     }
+
     /**
      * Get Account
      *
@@ -22,7 +28,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async get<Preferences extends Models.Preferences>(): Promise<Models.User<Preferences>> {
+    async get<Preferences extends Models.Preferences>(): Promise<Models.Account<Preferences>> {
         let path = '/account';
         let payload: Payload = {};
 
@@ -47,7 +53,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateEmail<Preferences extends Models.Preferences>(email: string, password: string): Promise<Models.User<Preferences>> {
+    async updateEmail<Preferences extends Models.Preferences>(email: string, password: string): Promise<Models.Account<Preferences>> {
         if (typeof email === 'undefined') {
             throw new AppwriteException('Missing required parameter: "email"');
         }
@@ -70,26 +76,21 @@ export class Account extends Service {
         }, payload);
     }
     /**
-     * Get Account Logs
+     * List Account Logs
      *
      * Get currently logged in user list of latest security activity logs. Each
      * log returns user IP address, location and date and time of log.
      *
-     * @param {number} limit
-     * @param {number} offset
+     * @param {string[]} queries
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getLogs(limit?: number, offset?: number): Promise<Models.LogList> {
+    async listLogs(queries?: string[]): Promise<Models.LogList> {
         let path = '/account/logs';
         let payload: Payload = {};
 
-        if (typeof limit !== 'undefined') {
-            payload['limit'] = limit;
-        }
-
-        if (typeof offset !== 'undefined') {
-            payload['offset'] = offset;
+        if (typeof queries !== 'undefined') {
+            payload['queries'] = queries;
         }
 
         return await this.client.call('get', path, {
@@ -105,7 +106,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateName<Preferences extends Models.Preferences>(name: string): Promise<Models.User<Preferences>> {
+    async updateName<Preferences extends Models.Preferences>(name: string): Promise<Models.Account<Preferences>> {
         if (typeof name === 'undefined') {
             throw new AppwriteException('Missing required parameter: "name"');
         }
@@ -132,7 +133,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updatePassword<Preferences extends Models.Preferences>(password: string, oldPassword?: string): Promise<Models.User<Preferences>> {
+    async updatePassword<Preferences extends Models.Preferences>(password: string, oldPassword?: string): Promise<Models.Account<Preferences>> {
         if (typeof password === 'undefined') {
             throw new AppwriteException('Missing required parameter: "password"');
         }
@@ -153,19 +154,20 @@ export class Account extends Service {
     /**
      * Update Account Phone
      *
-     * Update currently logged in user account phone number. After changing phone
-     * number, the user confirmation status will get reset. A new confirmation SMS
-     * is not sent automatically however you can use the phone confirmation
-     * endpoint again to send the confirmation SMS.
+     * Update the currently logged in user's phone number. After updating the
+     * phone number, the phone verification status will be reset. A confirmation
+     * SMS is not sent automatically, however you can use the [POST
+     * /account/verification/phone](/docs/client/account#accountCreatePhoneVerification)
+     * endpoint to send a confirmation SMS.
      *
-     * @param {string} number
+     * @param {string} phone
      * @param {string} password
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updatePhone<Preferences extends Models.Preferences>(number: string, password: string): Promise<Models.User<Preferences>> {
-        if (typeof number === 'undefined') {
-            throw new AppwriteException('Missing required parameter: "number"');
+    async updatePhone<Preferences extends Models.Preferences>(phone: string, password: string): Promise<Models.Account<Preferences>> {
+        if (typeof phone === 'undefined') {
+            throw new AppwriteException('Missing required parameter: "phone"');
         }
 
         if (typeof password === 'undefined') {
@@ -175,8 +177,8 @@ export class Account extends Service {
         let path = '/account/phone';
         let payload: Payload = {};
 
-        if (typeof number !== 'undefined') {
-            payload['number'] = number;
+        if (typeof phone !== 'undefined') {
+            payload['phone'] = phone;
         }
         if (typeof password !== 'undefined') {
             payload['password'] = password;
@@ -212,7 +214,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updatePrefs<Preferences extends Models.Preferences>(prefs: object): Promise<Models.User<Preferences>> {
+    async updatePrefs<Preferences extends Models.Preferences>(prefs: object): Promise<Models.Account<Preferences>> {
         if (typeof prefs === 'undefined') {
             throw new AppwriteException('Missing required parameter: "prefs"');
         }
@@ -323,7 +325,7 @@ export class Account extends Service {
         }, payload);
     }
     /**
-     * Get Account Sessions
+     * List Account Sessions
      *
      * Get currently logged in user list of active sessions across different
      * devices.
@@ -331,7 +333,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getSessions(): Promise<Models.SessionList> {
+    async listSessions(): Promise<Models.SessionList> {
         let path = '/account/sessions';
         let payload: Payload = {};
 
@@ -435,7 +437,7 @@ export class Account extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async updateStatus<Preferences extends Models.Preferences>(): Promise<Models.User<Preferences>> {
+    async updateStatus<Preferences extends Models.Preferences>(): Promise<Models.Account<Preferences>> {
         let path = '/account/status';
         let payload: Payload = {};
 
@@ -519,13 +521,12 @@ export class Account extends Service {
     /**
      * Create Phone Verification
      *
-     * Use this endpoint to send a verification message to your user's phone
-     * number to confirm they are the valid owners of that address. The provided
-     * secret should allow you to complete the verification process by verifying
-     * both the **userId** and **secret** parameters. Learn more about how to
-     * [complete the verification
+     * Use this endpoint to send a verification SMS to the currently logged in
+     * user. This endpoint is meant for use after updating a user's phone number
+     * using the [accountUpdatePhone](/docs/client/account#accountUpdatePhone)
+     * endpoint. Learn more about how to [complete the verification
      * process](/docs/client/account#accountUpdatePhoneVerification). The
-     * verification link sent to the user's phone number is valid for 15 minutes.
+     * verification code sent to the user's phone number is valid for 15 minutes.
      *
      * @throws {AppwriteException}
      * @returns {Promise}

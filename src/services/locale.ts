@@ -14,6 +14,12 @@ export type UploadProgress = {
 }
 
 export class Locale extends Service {
+
+     constructor(client: Client)
+     {
+        super(client);
+     }
+
     /**
      * Get User Locale
      *
@@ -44,7 +50,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getContinents(): Promise<Models.ContinentList> {
+    async listContinents(): Promise<Models.ContinentList> {
         let path = '/locale/continents';
         let payload: Payload = {};
 
@@ -61,7 +67,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCountries(): Promise<Models.CountryList> {
+    async listCountries(): Promise<Models.CountryList> {
         let path = '/locale/countries';
         let payload: Payload = {};
 
@@ -78,7 +84,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCountriesEU(): Promise<Models.CountryList> {
+    async listCountriesEU(): Promise<Models.CountryList> {
         let path = '/locale/countries/eu';
         let payload: Payload = {};
 
@@ -95,7 +101,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCountriesPhones(): Promise<Models.PhoneList> {
+    async listCountriesPhones(): Promise<Models.PhoneList> {
         let path = '/locale/countries/phones';
         let payload: Payload = {};
 
@@ -113,7 +119,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getCurrencies(): Promise<Models.CurrencyList> {
+    async listCurrencies(): Promise<Models.CurrencyList> {
         let path = '/locale/currencies';
         let payload: Payload = {};
 
@@ -130,7 +136,7 @@ export class Locale extends Service {
      * @throws {AppwriteException}
      * @returns {Promise}
      */
-    async getLanguages(): Promise<Models.LanguageList> {
+    async listLanguages(): Promise<Models.LanguageList> {
         let path = '/locale/languages';
         let payload: Payload = {};
 
