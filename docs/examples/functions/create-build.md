@@ -3,7 +3,7 @@ import * as sdk from "https://deno.land/x/appwrite/mod.ts";
 // Init SDK
 let client = new sdk.Client();
 
-let locale = new sdk.Locale(client);
+let functions = new sdk.Functions(client);
 
 client
     .setEndpoint('https://[HOSTNAME_OR_IP]/v1') // Your API Endpoint
@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = locale.getCurrencies();
+let promise = functions.createBuild('[FUNCTION_ID]', '[DEPLOYMENT_ID]', '[BUILD_ID]');
 
 promise.then(function (response) {
     console.log(response);
