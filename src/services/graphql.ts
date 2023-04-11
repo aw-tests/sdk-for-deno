@@ -23,41 +23,6 @@ export class Graphql extends Service {
     /**
      * GraphQL Endpoint
      *
-     * Execute a GraphQL query.
-     *
-     * @param {string} query
-     * @param {string} operationName
-     * @param {string} variables
-     * @throws {AppwriteException}
-     * @returns {Promise}
-     */
-    async 63a0228ea55af(query: string, operationName?: string, variables?: string): Promise<Response> {
-        if (typeof query === 'undefined') {
-            throw new AppwriteException('Missing required parameter: "query"');
-        }
-
-        let path = '/graphql';
-        let payload: Payload = {};
-
-        if (typeof query !== 'undefined') {
-            payload['query'] = query;
-        }
-
-        if (typeof operationName !== 'undefined') {
-            payload['operationName'] = operationName;
-        }
-
-        if (typeof variables !== 'undefined') {
-            payload['variables'] = variables;
-        }
-
-        return await this.client.call('get', path, {
-            'content-type': 'application/json',
-        }, payload);
-    }
-    /**
-     * GraphQL Endpoint
-     *
      * Execute a GraphQL mutation.
      *
      * @param {object} query

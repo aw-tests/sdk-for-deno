@@ -3,7 +3,7 @@ import * as sdk from "https://deno.land/x/appwrite/mod.ts";
 // Init SDK
 let client = new sdk.Client();
 
-let graphql = new sdk.Graphql(client);
+let databases = new sdk.Databases(client);
 
 client
     .setEndpoint('https://[HOSTNAME_OR_IP]/v1') // Your API Endpoint
@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = graphql.get('[QUERY]');
+let promise = databases.updateDatetimeAttribute('[DATABASE_ID]', '[COLLECTION_ID]', '', false, '');
 
 promise.then(function (response) {
     console.log(response);
