@@ -1,0 +1,17 @@
+export class AppwriteException {
+    message: String;
+    code: Number;
+    response: any;
+    type: String;
+
+    constructor(message: String, code: Number = 0, type: String = "", response: any = "") {
+        this.message = message;
+        this.code = code;
+        this.type = type;
+        this.response = response;
+    }
+
+    public toString(): String {
+        return `${this.message} - ${this.code} - ${this.type} - ${JSON.stringify(this.response)}`;
+    }
+}
