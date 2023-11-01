@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = avatars.getCreditCard(CreditCard.Amex);
+let promise = avatars.getCreditCard(CreditCard.AmericanExpress);
 
 promise.then(function (response) {
     console.log(response);

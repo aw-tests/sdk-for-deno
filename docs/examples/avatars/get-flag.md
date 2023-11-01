@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = avatars.getFlag(Flag.Af);
+let promise = avatars.getFlag(Flag.Afghanistan);
 
 promise.then(function (response) {
     console.log(response);

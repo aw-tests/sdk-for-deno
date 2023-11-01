@@ -12,7 +12,7 @@ client
 ;
 
 
-let promise = avatars.getBrowser(Browser.Aa);
+let promise = avatars.getBrowser(Browser.AvantBrowser);
 
 promise.then(function (response) {
     console.log(response);
